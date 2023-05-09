@@ -1,0 +1,2 @@
+# CheckInMate
+Attendance Made Easier

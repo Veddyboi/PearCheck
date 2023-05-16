@@ -1,4 +1,4 @@
 # CheckInMate
 Attendance Made Easier
 
-https://prod.liveshare.vsengsaas.visualstudio.com/join?A36314FB35508339AB8226E37A0A58DB56EE
+https://prod.liveshare.vsengsaas.visualstudio.com/join?CE376E3254DB0363990D7182CDEC558A7F76

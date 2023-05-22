@@ -12,32 +12,8 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
-		<script>
-
-			function login(){
-				const teachers = {
-					Kiyoi: {
-						students: ["Alexis", "Ved", "Aayan"],
-						password: "password1"
-					},
-					Kramor: {
-						students: ["Billy", "John", "Steve", "Chris"],
-						password: "password2"
-					}
-				};
-			const user = ["kramer@1","kiyoi@2","alexis","aryaman","yash","ved","rachel"];
-			const word = ["welcome1", "welcome2","welcome"];
-			if(user.includes(document.getElementById("name").value) && word.includes(document.getElementById("password").value)) {
-				window.close()
-				window.open("seating.html");
-				setTeacher(teachers[document.getElementById("name").value]);
-			}
-				
-		}
-				
-		</script>
 	</head>
-	<body class="is-preload">
+	<body class="is-preload" onload="startLogin()">
 
 		<!-- Wrapper -->
 			<div id="wrapper">
@@ -111,5 +87,7 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
+			<!-- custom scripts -->
+			<script src="assets/js/login.js"></script>
 	</body>
 </html>

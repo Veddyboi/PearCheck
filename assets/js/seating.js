@@ -12,8 +12,16 @@ function test() {
     console.log("STUDENT LIST: \n" + studentsAsString());
 }
 
+//runs when seating.html loads
+
+function startSeating() {
+    setTeacher(localStorage.getItem("teacher"));
+    console.log(studentsAsString());
+}
+
 function setTeacher(setTeacher) {
     teacher = setTeacher;
+    console.log(JSON.stringify(teacher));
     teacher.students.forEach((name) => {
         students[name] = "absent";
     });

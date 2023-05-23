@@ -6,8 +6,8 @@ var students = [];
 function startSeating() {
     //Checks if user is logged in
     if (sessionStorage.getItem('teacher') == null) {
-        window.close();
         window.open('login.html');
+        window.close();
     }
 
     teacher = JSON.parse(sessionStorage.getItem('teacher'));

@@ -2,7 +2,11 @@
 function startLogin() {
     let errorMessage = sessionStorage.getItem('Error Message');
     if (errorMessage != null) {
-        console.log(errorMessage);
+        let text = document.createElement('p');
+        text.innerHTML = errorMessage;
+        text.style.color = 'red';
+        document.getElementById(errorMessage.includes('username')? 'name' : 'password').after(text);
+        document.getElementById('name').value = sessionStorage.getItem('enteredUsername');
     }
 }
 
@@ -22,21 +26,24 @@ function login(){
         }
     };
 
-    var username = document.getElementById("name").value;
+    var username = document.getElementById('name').value;
 
 if (teachers.hasOwnProperty(username)) {
     if (teachers[username].password == document.getElementById('password').value.toLowerCase()) {
         sessionStorage.setItem('teacher', JSON.stringify(teachers[username]));
         sessionStorage.removeItem('Error Message');
+        sessionStorage.removeItem('enteredUsername');
         window.close();
         window.open('seating.html');
     } else {
-        sessionStorage.setItem('Error Message', 'PASSWORD INCORRECT');
+        sessionStorage.setItem('Error Message', 'The entered password was incorrect');
+        sessionStorage.setItem('enteredUsername', document.getElementById('name').value);
         window.close();
         window.open('login.html');
     }
 } else {
-    sessionStorage.setItem('Error Message', 'USERNAME NOT FOUND');
+    sessionStorage.setItem('Error Message', 'This username does not exist');
+    sessionStorage.setItem('enteredUsername', document.getElementById('name').value);
     window.close();
     window.open('login.html');
 }   

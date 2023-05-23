@@ -8,7 +8,7 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
-	<body class="is-preload">
+	<body class="is-preload" onload='startAttendance()'>
 
 		<!-- Wrapper -->
 			<div id="wrapper">
@@ -16,7 +16,7 @@
 				<!-- Header -->
 				<!-- Note: The "styleN" class below should match that of the banner element. -->
 					<header id="header" class="alt style2">
-						<a href="index.html" class="logo"><strong>PearCheck</strong></a>
+						<a href="index.html" class="logo" id="logo"><strong>PearCheck</strong></a>
 						<nav>
 							<a href="#menu">Menu</a>
 						</nav>
@@ -141,5 +141,7 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
+		<!-- custom scripts -->
+			<script src="assets/js/attendance.js"></script>
 	</body>
 </html>

@@ -11,13 +11,13 @@ function login(){
         Kiyoi: {
             first_name: 'kevin',
             last_name: 'kiyoi',
-            students: ['alexis', 'ved', 'aayan'],
+            students: ['alexis_tadeusz_sliwak', 'john_lennon', 'donald_john_trump', 'hillary_clinton', 'tony_stark','john_quincy_adams'],
             password: 'password1'
         },
         Kramer: {
             first_name: 'george',
             last_name: 'kramer',
-            students: ['billy', 'john', 'steve', 'chris'],
+            students: ['miley_ray_cyrus', 'vin_diesel', 'elton_hercules_john', 'kim_jong_un'],
             password: 'password2'
         }
     };
@@ -39,12 +39,5 @@ if (teachers.hasOwnProperty(username)) {
     sessionStorage.setItem('Error Message', 'USERNAME NOT FOUND');
     window.close();
     window.open('login.html');
-}
-
-// if(user.includes(document.getElementById("name").value) && word.includes(document.getElementById("password").value)) {
-// 	window.close()
-// 	window.open("seating.html");
-// 	setTeacher(teachers[document.getElementById("name").value]);
-// }
-    
+}   
 }

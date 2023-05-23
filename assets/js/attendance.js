@@ -4,7 +4,7 @@ var teacher = {};
 function startAttendance() {
     //Checks if user is logged in
     if (sessionStorage.getItem('teacher') == null) {
-        window.open('login.html');
+        window.open('login.html', '_self');
         // window.close();
     }
 

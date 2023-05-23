@@ -41,18 +41,18 @@ if (teachers.hasOwnProperty(username)) {
         sessionStorage.setItem('teacher', JSON.stringify(teachers[username]));
         sessionStorage.removeItem('Error Message');
         sessionStorage.removeItem('enteredUsername');
-        window.open('seating.html');
-        window.close();
+        window.open('seating.html', '_self');
+        // window.close();
     } else {
         sessionStorage.setItem('Error Message', 'The entered password was incorrect');
         sessionStorage.setItem('enteredUsername', document.getElementById('name').value);
-        window.open('login.html');
-        window.close();
+        window.open('login.html', '_self');
+        // window.close();
     }
 } else {
     sessionStorage.setItem('Error Message', 'This username does not exist');
     sessionStorage.setItem('enteredUsername', document.getElementById('name').value);
-    window.open('login.html');
-    window.close();
+    window.open('login.html', '_self');
+    // window.close();
 }   
 }

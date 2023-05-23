@@ -12,19 +12,19 @@ function startLogin() {
 
 function login(){
     const teachers = {
-        Kiyoi: {
+        kiyoi: {
             first_name: 'kevin',
             last_name: 'kiyoi',
             students: ['alexis_tadeusz_sliwak', 'john_lennon', 'donald_john_trump', 'hillary_clinton', 'tony_stark','john_quincy_adams'],
             password: 'kiyoi2023'
         },
-        Kramer: {
+        kramer: {
             first_name: 'george',
             last_name: 'kramer',
             students: ['miley_ray_cyrus', 'vin_diesel', 'elton_hercules_john', 'kim_jong_un'],
             password: 'kramer2023'
         },
-        Devor: {
+        devor: {
             first_name: 'mike',
             last_name: 'devor',
             students: ['first_middle_last', 'first_last', 'jenna_marbles', 'bill_gates'],
@@ -32,10 +32,10 @@ function login(){
         }
     };
 
-    var username = document.getElementById('name').value;
+    var username = document.getElementById('name').value.toLowerCase();
 
 if (teachers.hasOwnProperty(username)) {
-    if (teachers[username].password == document.getElementById('password').value.toLowerCase()) {
+    if (teachers[username].password == document.getElementById('password').value) {
         sessionStorage.setItem('teacher', JSON.stringify(teachers[username]));
         sessionStorage.removeItem('Error Message');
         sessionStorage.removeItem('enteredUsername');

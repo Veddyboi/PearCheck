@@ -16,13 +16,19 @@ function login(){
             first_name: 'kevin',
             last_name: 'kiyoi',
             students: ['alexis_tadeusz_sliwak', 'john_lennon', 'donald_john_trump', 'hillary_clinton', 'tony_stark','john_quincy_adams'],
-            password: 'password1'
+            password: 'kiyoi2023'
         },
         Kramer: {
             first_name: 'george',
             last_name: 'kramer',
             students: ['miley_ray_cyrus', 'vin_diesel', 'elton_hercules_john', 'kim_jong_un'],
-            password: 'password2'
+            password: 'kramer2023'
+        },
+        Devor: {
+            first_name: 'mike',
+            last_name: 'devor',
+            students: ['first_middle_last', 'first_last', 'jenna_marbles', 'bill_gates'],
+            password: 'devor2023'
         }
     };
 

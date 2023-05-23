@@ -26,15 +26,17 @@ function startSeating() {
     let template = document.getElementById('student');
     students.forEach((student, i) => {
         let copy = template.cloneNode(true);
-        let first = student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1);
-        let middle = student.middle_name;
-        let last = student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1);
 
         if (i == 0) {
             template.after(copy);
         } else {
             document.getElementById('student' + (i - 1)).after(copy);
         }
+        
+        let first = student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1);
+        let middle = student.middle_name;
+        let last = student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1);
+
         copy.innerHTML = last + ", " + (middle != null ? middle.charAt(0).toUpperCase() + ', ' : '') + first;
         copy.id = 'student' + i;
     });

@@ -5,7 +5,7 @@ function startAttendance() {
     //Checks if user is logged in
     if (sessionStorage.getItem('teacher') == null) {
         window.close();
-        window.open('login.html');
+        window.open(login.html);
     }
 
     teacher = JSON.parse(sessionStorage.getItem('teacher'));

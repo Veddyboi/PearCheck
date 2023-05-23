@@ -7,7 +7,7 @@
 		<link rel='stylesheet' href='assets/css/main.css' />
 		<noscript><link rel='stylesheet' href='assets/css/noscript.css' /></noscript>
 	</head>
-	<body class='is-preload'>
+	<body class='is-preload' onload="checkLoggedIn()">
 
 		<!-- Wrapper -->
 			<div id='wrapper'>
@@ -23,12 +23,11 @@
 				<!-- Menu -->
 					<nav id='menu'>
 						<ul class='links'>
-							<li><a href='index.html'>Home</a></li>
 							<li><a href='attendance.html'>Check-In</a></li>
 							<li><a href='seating.html'>Seating Chart</a></li>
 						</ul>
 						<ul class='actions stacked'> 
-							<li><a href='login.html' class='button fit'>Log In</a></li>
+							<li><a href='login.html' class='button fit' id='login'>Log In</a></li>
 						</ul>
 					</nav>
 
@@ -54,7 +53,7 @@
 										<img src='images/pic01.png' alt='' />
 									</span>
 									<header class='major'>
-										<h3><a href='login.html' class='link'>Check In Students</a></h3>
+										<h3><a href='attendance.html' class='link'>Check In Students</a></h3>
 										<p>Check-In the students more easier.</p>
 									</header>
 								</article>
@@ -63,7 +62,7 @@
 										<img src='images/pic02.png' alt='' />
 									</span>
 									<header class='major'>
-										<h3><a href='login.html' class='link'>Seating Chart</a></h3>
+										<h3><a href='seating.html' class='link'>Seating Chart</a></h3>
 										<p>let us create the Seating Chart.</p>
 									</header>
 								</article>
@@ -105,5 +104,8 @@
 			<script src='assets/js/breakpoints.min.js'></script>
 			<script src='assets/js/util.js'></script>
 			<script src='assets/js/main.js'></script>
+
+		<!-- custom scripts -->
+			<script src='assets/js/home.js'></script>
 	</body>
 </html>

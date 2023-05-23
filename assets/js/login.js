@@ -1,5 +1,7 @@
 //runs on load of login.html
 function startLogin() {
+    sessionStorage.removeItem('teacher');
+    
     let errorMessage = sessionStorage.getItem('Error Message');
     if (errorMessage != null) {
         let text = document.createElement('p');

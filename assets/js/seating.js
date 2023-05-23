@@ -30,7 +30,7 @@ function startSeating() {
         let middle = student.middle_name;
         let last = student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1);
 
-        copy.innerHTML = last + ", " + (middle != null ? middle.charAt(0).toUpperCase() + ', ' : '') + first;
+        copy.innerHTML = last + ", " + first + (middle != null ? ', ' + middle.charAt(0).toUpperCase() + '.' : '');
         copy.id = 'student' + i;
 
         if (i == 0) {

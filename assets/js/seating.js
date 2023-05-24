@@ -18,14 +18,13 @@ function startSeating() {
     h2.innerHTML = teacher.first_name + ' ' + teacher.last_name;
     document.getElementById('logo').after(h2);
 
-    //sets each student to absent
+    //initializes each student
     teacher.students.forEach((name) => {
         let full_name = name.split('_');
         students.push({
             first_name: full_name[0],
             middle_name: (full_name.length == 3)? full_name[1] : null,
             last_name: full_name[(full_name.length == 3) ? 2 : 1],
-            mark: 'absent'
         });
     });
 
@@ -60,13 +59,15 @@ function createGrid(rows, columns, pixel_height) {
     var count = 0;
     var grid = document.createElement('table');
     grid.className = 'grid';
-    for (var r = 0; r < rows; r++) {
+    for (let r = 0; r < rows; r++) {
         var tr = grid.appendChild(document.createElement('tr'));
         tr.style.height = pixel_height / rows + 'px';
         tr.id = 'row' + r;
-        for (var c = 0; c < columns; c++) {
-            var cell = tr.appendChild(document.createElement('td'));
-            // cell.innerHTML = 'Alexis' + ++count;
+        for (let c = 0; c < columns; c++) {
+            let cell = tr.appendChild(document.createElement('td'));
+            cell.addEventListener('click', () => {
+                alert('You clicked the student at (' + r + ', ' + c + ')');
+            });
         }
     }
     return grid;

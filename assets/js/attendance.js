@@ -3,12 +3,11 @@ var teacher = {};
 //runs on load of attendance.html
 function startAttendance() {
     //Checks if user is logged in
-    if (sessionStorage.getItem('teacher') == null) {
-        window.open('login.html', '_self');
-        // window.close();
+    if (localStorage.getItem('teacher') == null) {
+        location.href = 'login.html';
     }
 
-    teacher = JSON.parse(sessionStorage.getItem('teacher'));
+    teacher = JSON.parse(localStorage.getItem('teacher'));
 
     //Sets header to display the teacher's name
     let h2 = document.createElement('h3');

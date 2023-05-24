@@ -1,5 +1,7 @@
 var teacher = {};
 var students = [];
+//width and height of grid; in the future, width/height will be pulled from localStorage
+var width, height;
 
 //startSeating runs when seating.html loads
 
@@ -27,7 +29,14 @@ function startSeating() {
         });
     });
 
-    //clones the student template in the seating chart for each student
+    //creates grid
+    width = 15;
+    height = 5;
+    let oldGrid = document.getElementById('grid');
+    let grid = createGrid(height, width, 500);
+    oldGrid.parentNode.replaceChild(grid, oldGrid);
+
+    //clones the student template to make a list of students
     let template = document.getElementById('student');
     students.forEach((student, i) => {
         let copy = template.cloneNode(true);
@@ -45,4 +54,20 @@ function startSeating() {
         }
     });
     template.remove();
+}
+
+function createGrid(rows, columns, pixel_height) {
+    var count = 0;
+    var grid = document.createElement('table');
+    grid.className = 'grid';
+    for (var r = 0; r < rows; r++) {
+        var tr = grid.appendChild(document.createElement('tr'));
+        tr.style.height = pixel_height / rows + 'px';
+        tr.id = 'row' + r;
+        for (var c = 0; c < columns; c++) {
+            var cell = tr.appendChild(document.createElement('td'));
+            // cell.innerHTML = 'Alexis' + ++count;
+        }
+    }
+    return grid;
 }

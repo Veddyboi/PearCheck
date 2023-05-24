@@ -9,12 +9,12 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
 	</head>
-	<body class="is-preload">
+	<body class="is-preload" onload="startAttendance()">
 		<div id="wrapper">
 
 			<!-- Header -->
 				<header id="header" class="alt">
-					<a href="index.html" class="logo"><strong>PearCheck</strong> </a>
+					<a href="index.html" class="logo" id="logo"><strong>PearCheck</strong> </a>
 					<nav>
 						<a href="#menu">Menu</a>
 					</nav>
@@ -35,83 +35,49 @@
 				<section id="banner" class="major">
 					<div class="inner">
 						<header class="major">
-							<h1>Check-In Students.</h1>
+							<h1>Check-In Students</h1>
 						</header>
-						<div class="content">
+						<!-- <div class="content">
 							<p>Which period do you want to check in?</p>
-						</div>
+						</div> -->
 					</div>
 				</section>
-                <div class="select">
+                
+				<div id="sidebar">
 					<style>
+						*{
+							margin:0;
+							padding:0;
+							height: 45px;
+						}
+
 						body {
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   height: 70vh;
-   font-family: 'Open Sans', sans-serif;
-   color: #fff;
-}
-select {
-   -webkit-appearance:none;
-   -moz-appearance:none;
-   -ms-appearance:none;
-   appearance:none;
-   outline:0;
-   box-shadow:none;
-   border:0!important;
-   background: #5c6664;
-   background-image: none;
-   flex: 1;
-   padding: 0 .5em;
-   color:#fff;
-   cursor:pointer;
-   font-size: 1em;
-   font-family: 'Open Sans', sans-serif;
-}
-select::-ms-expand {
-   display: none;
-}
-.select {
-   position: relative;
-   display: flex;
-   width: 15em;
-   height: 3em;
-   line-height: 3;
-   background: #5c6664;
-   overflow: hidden;
-   border-radius: .25em;
-}
-.select::after {
-   content: '\25BC';
-   position: absolute;
-   top: 0;
-   right: 0;
-   padding: 0 1em;
-   background: #2b2e2e;
-   cursor:pointer;
-   pointer-events:none;
-   transition:.25s all ease;
-}
-.select:hover::after {
-   color: #23b499;
-}
+							font-family: Source Sans Pro;
+						}
+
+						#sidebar {
+							position: absolute;
+							width:200px;
+							height:500px;
+							/* change to a better color. This is just a preview of what it would look like */
+							background-color: #07485B;
+						}
+						#sidebar ul li {
+							list-style: none;
+							color: #fff; 
+							font-size: 15px;
+							padding: 20px 24px;
+						}
 					</style>
-					<select name="format" id="format">
-						<option selected disabled>Choose a period</option>
-						<option value="p1">Period 1</option>
-						<option value="p2">Period 2</option>
-						<option value="p3">Period 3</option>
-						<option value="p4">Period 4</option>
-						<option value="p5">Period 5</option>
-						<option value="p6">Period 6</option>
-					</select>
+					<ul>
+						<li><button value="p1">Period 1</button></li>
+						<li><button value="p2">Period 2</button></li>
+						<li><button value="p3">Period 3</button></li>
+						<li><button value="p4">Period 4</button></li>
+						<li><button value="p5">Period 5</button></li>
+						<li><button value="p6">Period 6</button></li>
+					</ul>
 				</div>
-				<input type="submit" value="Enter" class="primary" />
-				<script>
-					
-				</script>
 
 				<!-- <div id="qr-reader" style="width: 600px"></div>
 					<script>
@@ -134,5 +100,7 @@ select::-ms-expand {
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
+		<!-- Custom Scripts -->
+			<script src="assets/js/attendance.js"></script>
 	</body>
 </html>

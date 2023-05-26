@@ -1,213 +1,3 @@
-<!-- <!DOCTYPE HTML>
-
-<html>
-
-<head>
-  <title>PearCheck</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <link rel="stylesheet" href="assets/css/main.css" />
-  <noscript>
-    <link rel="stylesheet" href="assets/css/noscript.css" />
-  </noscript>
-  <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
-</head>
-
-<body class='is-preload' onload="startAttendance()">
-  <div id="wrapper">
-
-    
-    <header id="header" class="alt">
-		<a href='index.html' class='logo' id='logo'><strong>PearCheck</strong></a>
-      <nav>
-        <a href="#menu">Menu</a>
-      </nav>
-    </header>
-
-   
-    <nav id="menu">
-      <ul class="links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="attendance.html">Check-In</a></li>
-        <li><a href="seating.html">Seating Chart</a></li>
-      </ul>
-      <ul class="actions stacked">
-        <li><a href='login.html' class='button fit' id='login'>Log In</a></li>
-      </ul>
-    </nav>
-
-    <section id='banner' class='major'>
-		<div class='inner'>
-			<header class='major'>
-				<h2 id='greeting'>Hi, Name</h2>
-				<h1 id='welcome'>Check-In Students</h1>
-			</header>
-		</div>
-	</section>
-
-	<center>
-		<div style="display: flex; align-items: center; justify-content: space-between;">
-		  <ul style="margin-right: 60px; list-style-type: none;">
-			<li><button value="p1">Period 1</button></li>
-			<li><button value="p2">Period 2</button></li>
-			<li><button value="p3">Period 3</button></li>
-			<li><button value="p4">Period 4</button></li>
-			<li><button value="p5">Period 5</button></li>
-			<li><button value="p6">Period 6</button></li>
-			<li><button value="set">Set ID</button></li>
-		  </ul>
-		  <div>
-			<p id="schedule-text" style="margin-right: 219px; list-style-type: none;">Schedule for Today</p>
-			<ul id="schedule-list" style="list-style-type: none;"></ul>
-		  </div>
-		  <div style="display: flex; align-items: center;">
-			<p style="margin-right: 190px; margin-bottom: 0;" value="s">Students</p>
-			<p style="margin-right: 50px; margin-bottom: 0;" value="c">Present</p>
-			<p style="margin-right: 99px; margin-bottom: 0;" value="a">Absent</p>
-		  </div>
-		</div>
-	  </center>
-	  
-	  
-
-		<script>
-		const today = new Date();
-		const dayOfWeek = today.getDay();
-		let scheduleText = "";
-		let scheduleTimes = "";
-		var times;
-		if (dayOfWeek === 1 || dayOfWeek === 2 || dayOfWeek === 5) {
-			times = [
-			"A˚ 7:15 AM - 8:23 AM (68 min)",
-			"1˚ 8:30 AM - 9:27 AM (57 min)",
-			"2˚ 9:34 AM - 10:31 AM (57 min)",
-			"Brunch 10:31 AM - 10:36 AM (5 min)",
-			"3˚ 10:43 AM - 11:40 AM (57 min)",
-			"4˚ 11:47 AM - 12:44 PM (57 min)",
-			"Lunch 12:44 PM - 1:14 PM (30 min)",
-			"5˚ 1:21 PM - 2:18 PM (57 min)",
-			"6˚ 2:25 PM - 3:22 PM (57 min)",
-			"B˚ 3:29 PM - 4:26 PM (57 min)"
-			];
-		} else if (dayOfWeek === 3) {
-			times = [
-			"Staff Collaboration 8:00 AM - 8:45 AM (45 min)",
-			"1˚ 8:50 AM - 10:22 AM (92 min)",
-			"Brunch 10:22 AM - 10:30 AM (8 min)",
-			"3˚ 10:37 AM - 12:09 PM (92 min)",
-			"Lunch 12:09 PM - 12:39 PM (30 min)",
-			"ACCESS 12:46 PM - 1:41 PM (55 min)",
-			"5˚ 1:48 PM - 3:20 PM (92 min)",
-			"B˚ 3:27 PM - 4:24 PM (57 min)"
-			];
-		} else if (dayOfWeek === 4) {
-			times = [
-			"A˚ 7:15 AM - 8:45 AM (90 min)",
-			"2˚ 8:50 AM - 10:22 AM (92 min)",
-			"Brunch 10:22 AM - 10:30 AM (8 min)",
-			"4˚ 10:37 AM - 12:09 PM (92 min)",
-			"Lunch 12:09 PM - 12:39 PM (30 min)",
-			"ACCESS 12:46 PM - 1:41 PM (55 min)",
-			"6˚ 1:48 PM - 3:20 PM (92 min)",
-			"B˚ 3:27 PM - 4:24 PM (57 min)"
-			];
-		} else {
-			scheduleText = "No schedule available for today.";
-		}
-		scheduleText = "Schedule for Today";
-		scheduleTimes = times.map(time => `<li style='list-style-type: none; margin-right: 219px'>${time}</li>`).join("");
-		window.addEventListener('DOMContentLoaded', function() {
-			document.getElementById("schedule-text").innerText = scheduleText;
-			document.getElementById("schedule-list").innerHTML = scheduleTimes;
-		});
-		</script>
-		
-		<section id='two'>
-			<div class='inner'>
-				<p style="margin-left: 100px;">Click the Button (Start Scanning) to start scanning </p>
-				<ul class='actions'>
-					<li style="margin-left: 100px"><a href='' class='button next'>Start Scanning</a></li>
-				</ul>
-			</div>
-		</section>
-
-    <center><div id="qr-reader" style="width: 600px"></div></center>
-	  
-	  <script>
-		var html5QrcodeScanner;
-	  
-		function onScanSuccess(decodedText, decodedResult) {
-		  console.log(`Code scanned = ${decodedText}`, decodedResult);
-		}
-	  
-		function checkTimeAndStartScanning() {
-		  const today = new Date();
-		  const dayOfWeek = today.getDay();
-		  const currentHour = today.getHours();
-		  const currentMinute = today.getMinutes();
-	  
-		  // Define the start and end time for each day
-		  const schedule = {
-			1: { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },
-			2: { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },
-			3: { startHour: 8, startMinute: 0, endHour: 15, endMinute: 24 },
-			4: { startHour: 10, startMinute: 0, endHour: 11, endMinute: 0 },
-			5: { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 }
-		  };
-	  
-		  // Check if it's a valid day
-		  if (dayOfWeek in schedule) {
-			const { startHour, startMinute, endHour, endMinute } = schedule[dayOfWeek];
-			const startTime = new Date();
-			startTime.setHours(startHour);
-			startTime.setMinutes(startMinute);
-			const endTime = new Date();
-			endTime.setHours(endHour);
-			endTime.setMinutes(endMinute);
-	  
-			// Check if the current time is within the start and end time
-			if (today >= startTime && today <= endTime) {
-			  if (!html5QrcodeScanner) {
-				html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
-				html5QrcodeScanner.render(onScanSuccess);
-			  }
-			} else {
-			  // Time is not within the scanning window
-			  alert("It's not time yet, Check the Schedule for timings.");
-			}
-		  } else {
-			// Invalid day, no scanning schedule available
-			alert("No scanning schedule available for today.");
-		  }
-		}
-	  
-		window.addEventListener('DOMContentLoaded', function() {
-		  document.querySelector('.button.next').addEventListener('click', function(event) {
-			event.preventDefault();
-			checkTimeAndStartScanning();
-		  });
-		});
-	  </script>
-	  
-	  
-	  
-		   
-	
-
-  </div>
-
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/jquery.scrolly.min.js"></script>
-  <script src="assets/js/jquery.scrollex.min.js"></script>
-  <script src="assets/js/browser.min.js"></script>
-  <script src="assets/js/breakpoints.min.js"></script>
-  <script src="assets/js/util.js"></script>
-  <script src="assets/js/main.js"></script>
-  <script src='assets/js/attendance.js'></script>
-</body>
-
-</html> -->
-
 <!DOCTYPE HTML>
 <html>
 
@@ -254,6 +44,162 @@
       </div>
     </section>
 
+	<center>
+		<div class="option" id="student-options" style="list-style-type: none; width: 300px;">
+		  <style>
+			#student-options {
+			  display: none;
+			}
+	  
+			#student-options.visible {
+			  display: block;
+			}
+		  </style>
+	  
+		  <p>Type student's name:</p>
+		  <input type="text" id="student-textbox" style="width: 300px;">
+		  <button onclick="checkUsername()">Check Name</button>
+	  
+		  <div id="set-id-section" style="display: none;">
+			<p>Set ID:</p>
+			<input type="text" id="student-textboxID" style="width: 300px;">
+			<button onclick="setNewStudentID()">Set ID</button>
+		  </div>
+	
+		  <div id="second-section" style="display: none;">
+			<input type="text" id="new-id-textbox">
+			<br><button onclick="setNewStudentID()">SET ID</button>';
+		  </div> <!-- Added a container for the second section -->
+		</div>
+	  </center>
+	  
+	  <script>
+		// JavaScript code
+		const teachers = {
+			kiyoi: {
+				first_name: 'kevin',
+				last_name: 'kiyoi',
+				periods: {
+				period1: ['hi', 'bob', 'bill'],
+				period2: ['king', 'kins', 'kinhss']
+				},
+				password: 'kiyoi2023'
+			},
+			kramer: {
+				first_name: 'george',
+				last_name: 'kramer',
+				periods: {
+				period1: ['miley_ray_cyrus', 'vin_diesel', 'elton_hercules_john'],
+				period2: ['kim_jong_un']
+				},
+				password: 'kramer2023'
+			},
+			devor: {
+				first_name: 'mike',
+				last_name: 'devor',
+				periods: {
+				period1: ['first_middle_last', 'first_last'],
+				period2: ['jenna_marbles', 'bill_gates']
+				},
+				password: 'devor2023'
+			}
+			};
+
+	  
+		var teacherKey;
+	  
+		function checkUsername() {
+		  var enteredUsername = document.getElementById('student-textbox').value;
+		  var teacherName = '';
+		  var usernameExists = false;
+	  
+		  // Check if entered username exists with teacher's name
+		  for (var key in teachers) {
+			if (teachers.hasOwnProperty(key)) {
+			  var teacherData = teachers[key];
+			  if (teacherData.students.includes(enteredUsername)) {
+				teacherName = teacherData.first_name + ' ' + teacherData.last_name;
+				usernameExists = true;
+				teacherKey = key;
+				break;
+			  }
+			}
+		  }
+	  
+		  if (usernameExists) {
+			alert('Username exists with teacher: ' + teacherName);
+			var studentData = getStudentData(enteredUsername);
+			if (studentData && studentData.id) {
+			  document.getElementById('second-section').style.display = 'block'; // Show the second text
+			  document.getElementById('second-section').innerHTML = 'Enter new ID for ' + enteredUsername + '';
+			} else {
+			  document.getElementById('set-id-section').style.display = 'block';
+			  document.getElementById('student-textboxID').focus();
+			  document.getElementById('student-textboxID').value = '';
+			  document.getElementById('second-section').style.display = 'none'; // Hide the second text
+			}
+		  } else {
+			alert('Username does not exist with any teacher.');
+		  }
+		}
+	  
+		function setNewStudentID() {
+		  var enteredID = document.getElementById('student-textboxID').value;
+		  var enteredUsername = document.getElementById('student-textbox').value;
+		  var students = teachers[teacherKey].students;
+	  
+		  // Find the student object with the entered username
+		  var studentIndex = students.indexOf(enteredUsername);
+	  
+		  if (studentIndex !== -1) {
+			// Add the ID property to the student object
+			students[studentIndex] = { username: enteredUsername, id: enteredID };
+			alert('Student ID ' + enteredID + ' has been set to user ' + enteredUsername);
+			hideSetIdSection(); // Hide the set-id section
+		  } else {
+			alert('Username not found.');
+		  }
+	  
+		  console.log(teachers); // Display updated teachers object in the console
+		  // Clear input fields
+		  document.getElementById('student-textbox').value = '';
+		  document.getElementById('student-textboxID').value = '';
+		}
+	  
+		function hideSetIdSection() {
+		  document.getElementById('set-id-section').style.display = 'none';
+		}
+
+	  
+		function getStudentData(username) {
+		  var students = teachers[teacherKey].students;
+	  
+		  // Find the student object with the entered username
+		  for (var i = 0; i < students.length; i++) {
+			var student = students[i];
+			if (student === username) {
+			  return {
+				username: student,
+				id: student.id || null
+			  };
+			}
+		  }
+	  
+		  return null;
+		}
+	  </script>
+	  
+	  
+	  
+	  
+	  
+	
+	  
+
+	  
+	  
+		  
+
     <center>
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <ul style="margin-right: 60px; list-style-type: none;">
@@ -263,7 +209,7 @@
           <li><button value="p4">Period 4</button></li>
           <li><button value="p5">Period 5</button></li>
           <li><button value="p6">Period 6</button></li>
-          <li><button value="set" id="set-id">Set ID</button></li>
+          <li><button value="kiyoi" id="set-id">Set ID</button></li>
         </ul>
         <div>
           <p id="schedule-text" style="margin-right: 219px; list-style-type: none;">Schedule for Today</p>
@@ -276,6 +222,8 @@
         </div>
       </div>
     </center>
+
+	
 
 	<script>
 		const today = new Date();
@@ -357,7 +305,7 @@
 			1: { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },
 			2: { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },
 			3: { startHour: 8, startMinute: 0, endHour: 15, endMinute: 24 },
-			4: { startHour: 10, startMinute: 0, endHour: 11, endMinute: 0 },
+			4: { startHour: 11, startMinute: 0, endHour: 12, endMinute: 0 },
 			5: { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 }
 		  };
 	  
@@ -374,7 +322,7 @@
 			// Check if the current time is within the start and end time
 			if (today >= startTime && today <= endTime) {
 			  if (!html5QrcodeScanner) {
-				html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+				html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 500 });
 				html5QrcodeScanner.render(onScanSuccess);
 			  }
 			} else {
@@ -406,106 +354,7 @@
   <script src="assets/js/util.js"></script>
   <script src="assets/js/main.js"></script>
   <script src='assets/js/attendance.js'></script>
-  
-
-  <center><div class="option" id="student-options" style="list-style-type: none; width: 300px;">
-    <style>
-      #student-options {
-        display: none;
-      }
-
-      #student-options.visible {
-        display: block;
-      }
-    </style>
-
-    <p>Choose a student:</p>
-    <select id="student-select" style="width: 300px;">
-      <option value="student1">Student 1</option>
-      <option value="student2">Student 2</option>
-      <option value="student3">Student 3</option>
-    </select>
-  </div>
-</div></center>
-
-  <script>
-    // Function to handle the button click event
-    function handleSetId() {
-      // Remove the schedule timings
-      document.getElementById("schedule-text").innerText = "";
-      document.getElementById("schedule-list").innerHTML = "";
-      document.getElementById("st").innerText = "";
-      document.getElementById("pr").innerText = "";
-      document.getElementById("ab").innerText = "";
-
-      // Remove the Start scanning button and text
-      document.getElementById("two").innerHTML = "";
-
-      // Show the student options
-      var studentOptions = document.getElementById("student-options");
-      studentOptions.classList.add("visible");
-    }
-
-    // Add event listener to the Set ID button
-    document.getElementById("set-id").addEventListener("click", handleSetId);
-
-    // Function to handle the period button click event
-    function handlePeriodButtonClick() {
-      // Reappear the schedule timings, Start scanning button, and div with id="wrapper"
-      document.getElementById("schedule-text").innerText = "Schedule for Today";
-      document.getElementById("schedule-list").innerHTML = scheduleTimes;
-      document.getElementById("st").innerText = "Students";
-      document.getElementById("pr").innerText = "Present";
-      document.getElementById("ab").innerText = "Absent";
-
-      // Recreate the section with the desired HTML structure
-      var section = document.createElement('section');
-      section.id = 'two';
-
-      var div = document.createElement('div');
-      div.classList.add('inner');
-
-      var paragraph = document.createElement('p');
-      paragraph.style.marginLeft = '100px';
-      paragraph.textContent = 'Click the Button (Start Scanning) to start scanning';
-
-      var ul = document.createElement('ul');
-      ul.classList.add('actions');
-
-      var li = document.createElement('li');
-      li.style.marginLeft = '100px';
-
-      var link = document.createElement('a');
-      link.href = '';
-      link.classList.add('button', 'next');
-      link.id = 'start-scanning';
-      link.textContent = 'Start Scanning';
-
-      // Append the elements to recreate the section
-      li.appendChild(link);
-      ul.appendChild(li);
-      div.appendChild(paragraph);
-      div.appendChild(ul);
-      section.appendChild(div);
-
-      // Replace the existing section with the recreated section
-      var existingSection = document.getElementById('two');
-      existingSection.parentNode.replaceChild(section, existingSection);
-
-      // Hide the student options
-      var studentOptions = document.getElementById("student-options");
-      studentOptions.classList.remove("visible");
-    }
-
-    // Add event listeners to the period buttons
-    var periodButtons = document.querySelectorAll("button[value^='p']");
-    periodButtons.forEach(button => {
-      button.addEventListener("click", handlePeriodButtonClick);
-    });
-  </script>
-
-
-  
+ 
 </body>
 
 </html>

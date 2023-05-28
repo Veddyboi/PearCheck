@@ -11,14 +11,17 @@
 		<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no' />
 		<link rel='stylesheet' href='assets/css/main.css' />
 		<link rel='stylesheet' href='assets/css/seating.css' />
+		<link rel='stylesheet' href="assets/css/seating.css"/>
 		<noscript><link rel='stylesheet' href='assets/css/noscript.css' /></noscript>
 	</head>
 	<body class='is-preload' onload='startSeating()'>
 
-		<!-- Wrapper -->
+		<div class="grid container">
+		`	<!-- Wrapper -->
 			<div id='wrapper'>
 
-				<!-- Header -->
+				<div class="top" id="top">
+					<!-- Header -->
 					<header id='header'>
 						<a href='index.html' class='logo' id='logo'><strong>PearCheck</strong></a>
 						<nav>
@@ -26,7 +29,7 @@
 						</nav>
 					</header>
 
-				<!-- Menu -->
+					<!-- Menu -->
 					<nav id='menu'>
 						<ul class='links'>
 							<li><a href='index.html'>Home</a></li>
@@ -36,25 +39,53 @@
 							<li><a href='login.html' class='button fit'>Log Out</a></li>
 						</ul>
 					</nav>
+				</div>
 
-				<!-- Main -->
+				<div class="sidenav">
+					<ul id='period list'>
+						<li><button id="period1" onclick="showPeriod(0)">Period 1</button></li>
+						<li><button id="period2" onclick="showPeriod(1)">Period 2</button></li>
+						<li><button id="period3" onclick="showPeriod(2)">Period 3</button></li>
+						<li><button id="period4" onclick="showPeriod(3)">Period 4</button></li>
+						<li><button id="period5" onclick="showPeriod(4)">Period 5</button></li>
+						<li><button id="period6" onclick="showPeriod(5)">Period 6</button></li>
+					</ul>
+				</div>
+
+				<div class="main">
+					<!-- Main -->
 					<div id='main' class='alt'>
 
-						<!-- One -->
-							<section id='one'>
-								<div class='inner'>
-									<header class='major'>
+					<!-- One -->
+					<section id='one'>
+						<div class='inner'>
+							<div>
+								<header class='major'>
 										<h1>Seating Chart</h1>
 									</header>
 									<!-- <span class='image main'><img src='images/pic11.jpg' alt='' /></span> -->
 									<table id='grid'></table>
-									<p id='student'>template</p>
+									<div id='editToggles' style='float:left'>
+										<button onclick='toggleEdit()' id='editButton'>edit layout</button>
+									</div>
+									<div id='dimensions' style='float:right;'></div>
 								</div>
-							</section>
+								<br>
+								<br>
+								<div>
+									<header class='major' id="roster header">
+										<h1>Class Roster</h1>
+										<button onclick="createStudent()">Create New Student</button>
+									</header>
+								</div>
+							</div>
+						</section>
 
 					</div>
-
+				</div>
 			</div>
+		</div>
+			
 
 		<!-- Scripts -->
 			<script src='assets/js/jquery.min.js'></script>

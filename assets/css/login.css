@@ -10,15 +10,11 @@ body {
 
 .sidenav {
     width: 200px;
-    /* min-height: 100%; */
-    /* float:left; */
+    min-height: 100%;
+    float:left;
     background-color: #07485B;
-    /* overflow: hidden; */
-    /* flex-direction: column;  */
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
+    overflow: hidden;
+    flex-direction: column; 
 }
 .sidenav ul {
     position: absolute;

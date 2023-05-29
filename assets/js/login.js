@@ -211,7 +211,8 @@ function createTeacher() {
                 username: username,
                 password: password,
                 periods: periods,
-                seatingCharts: seatingChartArr
+                seatingCharts: seatingChartArr,
+                time_arrived: null
             });
             localStorage.setItem('teachers', JSON.stringify(teachers));
             location.reload();

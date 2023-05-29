@@ -102,11 +102,16 @@ function showStudents(period) {
         }
     });
 
-    var element_of_absent_students = document.getElementById('absent students');
-    var element_of_present_students = document.getElementById('present students');
+    var element_of_absent_students = document.getElementById('absent-students');
+    var element_of_present_students = document.getElementById('present-students');
 
-    element_of_absent_students.innerHTML = '<strong>Absent Students</strong><br>' + absentStudents.join('<br>');
+    element_of_absent_students.innerHTML = '<strong>Absent Students:</strong><br>' + absentStudents.join('<br>');
     element_of_present_students.innerHTML = '<strong>Present Students:</strong><br>' + presentStudents.join('<br>');
     
+}
 
+function updateLocalStorage() {
+    var teachers = JSON.parse(localStorage.getItem('teachers'));
+    teachers[JSON.parse(localStorage.getItem('teacher'))] = teacher;
+    localStorage.setItem('teachers', JSON.stringify(teachers));
 }

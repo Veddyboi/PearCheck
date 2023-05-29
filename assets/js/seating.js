@@ -128,7 +128,8 @@ function createStudent() {
     teacher.periods[period].push({
         first_name: prompt("Student's First Name").toLowerCase(),
         last_name: prompt("Studnt's Last Name").toLowerCase(),
-        id: prompt("Student's id")
+        id: prompt("Student's id"),
+        attendance: 'absent'
     });
     updateLocalStorage();
     location.reload();

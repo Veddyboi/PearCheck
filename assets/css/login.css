@@ -10,14 +10,13 @@ body {
 
 .sidenav {
     width: 200px;
-    min-height: 100%;
+    height: 100vh;
     float:left;
-    background-color: #07485B;
-    overflow: hidden;
-    flex-direction: column; 
-}
-.sidenav ul {
-    position: absolute;
+    /* background-color: #07485B; */
+    position: fixed;
+    top: 60px;
+    left: 0;
+    overflow-y: auto;
 }
 
 .sidenav ul li {
@@ -34,7 +33,7 @@ body {
 
 .main {
     float: left;
-    margin-left: 60px;
+    margin-left: 200px;
 }
 
 #credentials {

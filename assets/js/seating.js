@@ -1,7 +1,7 @@
 var teacher = {};
+//seating chart is a 2d array of student{}; outer array is rows, inner array is columns
+var seatingChart = [];
 var period;
-//width and height of grid; in the future, width/height will be pulled from localStorage
-var width, height;
 var editMode = false;
 
 //startSeating runs when seating.html loads
@@ -28,19 +28,12 @@ function startSeating() {
         period = sessionStorage.getItem('period');
     }
 
-    var students = teacher.periods[period];
-
-    //creates grid
-    width = 15;
-    height = 5;
-    let oldGrid = document.getElementById('grid');
-    let grid = createGrid(height, width, 500);
-    oldGrid.parentNode.replaceChild(grid, oldGrid);
+    drawSeatingChart();
 
     //clones the student template to make a list of students
     let template = document.createElement('p');
     template.id = 'student';
-    students.forEach((student, i) => {
+    teacher.periods[period].forEach((student, i) => {
         let copy = template.cloneNode(true);
         let first = student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1);
         let last = student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1);
@@ -57,16 +50,20 @@ function startSeating() {
     template.remove();
 }
 
-function createGrid(rows, columns, pixel_height) {
+function createGrid(rows, columns, pixel_width, pixel_height) {
     var grid = document.createElement('table');
     grid.className = 'grid';
     grid.id = 'grid';
+    grid.style.width = pixel_width * columns + 'px';
+    grid.style.height = pixel_height * rows + 'px';
+
     for (let r = 0; r < rows; r++) {
         var tr = grid.appendChild(document.createElement('tr'));
-        tr.style.height = pixel_height / rows + 'px';
         tr.id = 'row' + r;
         for (let c = 0; c < columns; c++) {
-            let cell = tr.appendChild(document.createElement('td'));
+            let td = document.createElement('td');
+            td.id = r + '_' + c;
+            let cell = tr.appendChild(td);
             cell.addEventListener('click', () => {
                 alert('You clicked the student at (' + r + ', ' + c + ')');
             });
@@ -133,6 +130,71 @@ function createStudent() {
     });
     updateLocalStorage();
     location.reload();
+}
+
+function setGrid(row, col, student) {
+    for (let r = 0; r < seatingChart.length; r++) {
+        for (let c = 0; c < seatingChart[r].length; c++) {
+            let oldPosition = seatingChart[r][c];
+            if (oldPosition && oldPosition.id == student.id) {
+                oldPosition = null;
+                document.getElementById(r + '_' + c).innerHTML = '';
+            }
+        }
+    }
+    seatingChart[row][col] = student;
+
+    drawSeatingChart();
+    updateLocalStorage();
+    return;
+}
+
+function drawSeatingChart() {
+    seatingChart = teacher.seatingCharts[period];
+
+    //creates grid with each cell having a width/height of 50px
+    let oldGrid = document.getElementById('grid');
+    let grid = createGrid(seatingChart.length, seatingChart[0].length, 50, 50);
+    oldGrid.parentNode.replaceChild(grid, oldGrid);
+
+    for (let r = 0; r < seatingChart.length; r++) {
+        for (let c = 0; c < seatingChart[r].length; c++) {
+            let student = seatingChart[r][c];
+            if (student) {
+                document.getElementById(r + '_' + c).innerHTML = student.first_name + student.last_name;
+            }
+        }
+    }
+
+    //shows which students are not in the seating chart
+    var listedStudentIDs = [];
+    seatingChart.forEach((row1) => {
+        row1.forEach((student1) => {
+            if (student1) {
+                listedStudentIDs.push(student1.id);
+            }
+        });
+    });
+
+    var text = document.createElement('p');
+    text.id = 'unlisted students';
+    text.style.color = 'red';
+    teacher.periods[period].forEach((student1, i) => {
+        if (!listedStudentIDs.includes(student1.id)) {
+            if (i > 0) {
+                text.innerHTML += ', ';
+            }
+            text.innerHTML += student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase();
+        }
+    });
+    let oldMessage = document.getElementById('ulisted students');
+    if (oldMessage) {
+        oldMessage.remove();
+    }
+    if (text.innerHTML) {
+        text.innerHTML = 'Not In Seating Chart: ' + text.innerHTML;
+        document.getElementById('after edit button').after(text);
+    }
 }
 
 function updateLocalStorage() {

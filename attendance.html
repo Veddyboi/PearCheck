@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
 </head>
 
-<body class='is-preload'>
+<body class='is-preload' onload="startAttendance()">
   <div id="wrapper">
 
     <!-- Header -->
@@ -49,19 +49,20 @@
     <center>
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <ul style="margin-right: 60px; list-style-type: none;">
-          <li><button id="p1" onclick="showStudents('p1')">Period 1</button></li>
-          <li><button id="p2" onclick="showStudents('p2')">Period 2</button></li>
-          <li><button id="p3" onclick="showStudents('p3')">Period 3</button></li>
-          <li><button id="p4" onclick="showStudents('p4')">Period 4</button></li>
-          <li><button id="p5" onclick="showStudents('p5')">Period 5</button></li>
-          <li><button id="p6" onclick="showStudents('p6')">Period 6</button></li>
+          <li><button id="p1" onclick="showStudents(0)">Period 1</button></li>
+          <li><button id="p2" onclick="showStudents(1)">Period 2</button></li>
+          <li><button id="p3" onclick="showStudents(2)">Period 3</button></li>
+          <li><button id="p4" onclick="showStudents(3)">Period 4</button></li>
+          <li><button id="p5" onclick="showStudents(4)">Period 5</button></li>
+          <li><button id="p6" onclick="showStudents(5)">Period 6</button></li>
         </ul>
         <div>
           <p id="schedule-text" style="margin-right: 219px; list-style-type: none;">Schedule for Today</p>
           <ul id="schedule-list" style="list-style-type: none;"></ul>
         </div>
         <div id="wrapper" style="display: flex; align-items: center;">
-          <p id="st" style="margin-right: 190px; margin-bottom: 0;">Students</p>
+          <p id="absent students" style="margin-right: 100px; margin-bottom: 0;">Absent Students</p>
+		  <p id="present students" style="margin-right: 100px; margin-bottom: 0;">Present Students</p>
           <p id="pr" style="margin-right: 50px; margin-bottom: 0;">Present</p>
           <p id="ab" style="margin-right: 99px; margin-bottom: 0;">Absent</p>
         </div>

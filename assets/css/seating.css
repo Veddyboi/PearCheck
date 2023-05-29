@@ -1,13 +1,15 @@
 .grid { 
     margin:1em auto; 
     border-collapse: collapse;
-    width: 70%;
+    table-layout: fixed;
 }
 .grid td {
     cursor:pointer;
     border:1px solid #ccc;
+    word-wrap: break-word;
     text-align:center;
-    font-family:sans-serif; font-size:13px;
+    font-family:sans-serif;
+    font-size:13px;
     background-color: #07485B;
 }
 .grid td.clicked {

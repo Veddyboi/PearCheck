@@ -1,5 +1,6 @@
 # CheckInMate
 Attendance Made Easier
 
+attendance.html -> checks if students are absent, tarty, or on time
 
-https://prod.liveshare.vsengsaas.visualstudio.com/join?0E8E7ABB735086B4CFA60D8AF95F5E56BBC4
+seating.html -> seating chart and class roster

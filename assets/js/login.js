@@ -193,12 +193,25 @@ function createTeacher() {
         }
 
         if (!retry) {
+            //creates a square seating chart with side lengths of 6
+            let seatingChartArr = new Array(6);
+            for (let i = 0; i < seatingChartArr.length; i++) {
+                seatingChartArr[i] = new Array(6);
+                for (let j = 0; j < seatingChartArr[i].length; j++) {
+                    seatingChartArr[i][j] = new Array(seatingChartArr[i].length);
+                }
+            }
+            let periods = new Array(6);
+            for (let i = 0; i < periods.length; i++) {
+                periods[i] = [];
+            }
             teachers.push({
                 first_name: first_name.toLowerCase(),
                 last_name: last_name.toLowerCase(),
                 username: username,
                 password: password,
-                periods: [[],[],[],[],[],[]]
+                periods: periods,
+                seatingCharts: seatingChartArr
             });
             localStorage.setItem('teachers', JSON.stringify(teachers));
             location.reload();

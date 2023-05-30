@@ -1,0 +1,21 @@
+.grid {
+    border-collapse: collapse;
+    table-layout: fixed;
+    z-index: 10;
+}
+.grid td {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 13px;
+    background-color: #0ab3e7;
+    word-wrap: break-word;
+}
+.grid td.clicked {
+    background-color:yellow;
+    font-weight:bold; color:red;
+}
+.grid td:hover {
+    opacity: 0.5;
+}

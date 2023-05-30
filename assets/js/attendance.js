@@ -20,6 +20,24 @@ function startAttendance() {
 }
 
 function showStudents(newPeriod) {
+    var updatedTime = localStorage.getItem('last-updated');
+    var currentTime = new Date();
+    if (updatedTime) {
+        var oldTime = new Date(JSON.parse(updatedTime));
+        if (oldTime < currentTime && (oldTime.getDate() != currentTime.getDate() || oldTime.getMonth() != currentTime.getMonth() || oldTime.getFullYear != currentTime.getFullYear())) {
+            //sets every student to absent
+            JSON.parse(localStorage.getItem('teachers')).forEach((teacher) => {
+                teacher.periods.forEach((period1) => {
+                    period1.students.forEach((student) => {
+                        student.attendance = 'absent';
+                        student.time_arrived = null;
+                    });
+                });
+            });
+        }
+    }
+    updateLocalStorage();
+    localStorage.setItem('last-updated', JSON.stringify(currentTime));
     period = newPeriod;
 
     // Get the elements
@@ -117,31 +135,95 @@ function showStudents(newPeriod) {
     var presentStudents = [];
 
     teacher.periods[period].students.forEach((student) => {
-        let fullName = student.first_name + ' ' + student.last_name;
         if (student.attendance == 'absent') {
-            absentStudents.push(fullName);
+            absentStudents.push(student);
         } else if (student.attendance == 'present') {
-            presentStudents.push(fullName);
+            presentStudents.push(student);
         }
     });
-
-    // var element_of_absent_students = document.getElementById('absent-students');
-    // var element_of_present_students = document.getElementById('present-students');
-
-    // element_of_absent_students.innerHTML = '<strong>Absent Students:</strong><br>' + absentStudents.join('<br>');
-    // element_of_present_students.innerHTML = '<strong>Present Students:</strong><br>' + presentStudents.join('<br>');
     
-    var days = [
-        [['08:30', '9:27'], ['09:34', '10:31'], ['10:43','11:40'], ['11:47','12:44'], ['13:21','14:18'], ['14:25','15:22']],
-        [['08:30', '9:27'], ['09:34', '10:31'], ['10:43','11:40'], ['11:47','12:44'], ['13:21','14:18'], ['14:25','15:22']],
-        [['08:50', '10:22'], ['08:50','10:22'], ['10:37','12:09'], ['10:37','12:09'], ['13:48','15:20'], ['13:48','15:20']],
-        [['08:50', '10:22'], ['08:50','10:22'], ['10:37','12:09'], ['10:37','12:09'], ['13:48','15:20'], ['13:48','15:20']],
-        [['08:30', '9:27'], ['09:34', '10:31'], ['10:43','11:40'], ['11:47','12:44'], ['13:21','14:18'], ['14:25','15:22']]
+    var classTimes = [
+        [[time(8,30), time(9,27)], [time(9,34), time(10,31)], [time(10,43),time(11,40)], [time(11,47),time(12,44)], [time(13,21),time(14,18)], [time(14,25),time(15,22)]],
+        [[time(8,30), time(9,27)], [time(9,34), time(10,31)], [time(10,43),time(11,40)], [time(11,47),time(12,44)], [time(13,21),time(14,18)], [time(14,25),time(15,22)]],
+        [[time(8,50), time(10,22)], [time(8,50),time(10,22)], [time(10,37),time(12,9)], [time(10,37),time(12,9)], [time(13,48),time(15,20)], [time(13,48),time(15,20)]],
+        [[time(8,50), time(10,22)], [time(8,50),time(10,22)], [time(10,37),time(12,9)], [time(10,37),time(12,9)], [time(13,48),time(15,20)], [time(13,48),time(15,20)]],
+        [[time(8,30), time(9,27)], [time(9,34), time(10,31)], [time(10,43),time(11,40)], [time(11,47),time(12,44)], [time(13,21),time(14,18)], [time(14,25),time(15,22)]]
     ]
-    let currentTime = new Date();
-    var studentsText = document.getElementById('students');
-    studentsText.innerHTML = '<strong>Students:</strong><br>';
-    studentsText.innerHTML += absentStudents.map(student => student + ' <br>');
+    if (dayOfWeek > 0 && dayOfWeek < 6) {
+        // var studentsText = document.getElementById('students');
+        // studentsText.innerHTML = '<strong>Students:</strong><br>';
+        // studentsText.innerHTML += absentStudents.map(student => capitalize(student.first_name) + ' ' + capitalize(student.last_name) + ' ' + timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime) + '<br>');
+        // studentsText.innerHTML += presentStudents.map(student => capitalize(student.first_name) + ' ' + capitalize(student.last_name) + ' ' + timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived)) + '<br>');
+        let oldGrid = document.getElementById('grid');
+        let grid = createGrid(absentStudents.length + presentStudents.length, 2, 100, 100);
+        oldGrid.parentNode.replaceChild(grid, oldGrid);
+
+        absentStudents.forEach((student, i) => {
+            let nameCell = document.getElementById(i + '_0');
+            nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
+            let timeCell = document.getElementById(i + '_1');
+            timeCell.style.color = 'red';
+            let lateTimeString = timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime);
+            let lateTime = parseInt(lateTimeString.split(':')[0]) + parseInt(lateTimeString.split(':')[1])
+            let periodLength = timeDifference(classTimes[dayOfWeek - 1][period][0], classTimes[dayOfWeek - 1][period][1]);
+            if (lateTime >= periodLength) {
+                timeCell.innerHTML = 'absent';
+            } else {
+                timeCell.innerHTML = 'absent<br>' + timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime);
+            }
+            if (lateTime <= 5) {
+                timeCell.style.color = 'orange';
+            }
+        });
+        presentStudents.forEach((student, i) => {
+            let nameCell = document.getElementById((i + absentStudents.length) + '_0');
+            nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
+            let timeCell = document.getElementById((i + absentStudents.length) + '_1');
+            timeCell.style.color = 'green';
+            timeCell.innerHTML = 'present<br>' + timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived));
+        });
+    }
+}
+
+//amount of time from date1 -> date2 as a string in 00:00 hrs:min form
+function timeDifference(date1, date2) {
+    let hours = date2.getHours() - date1.getHours();
+    let minutes = date2.getMinutes() - date1.getMinutes();
+
+    hours = Math.trunc(hours + minutes / 60);
+    minutes = (hours * 60 + minutes) % 60;
+
+    return (hours * 60 + minutes < 0 ? '-' : '') + (Math.abs(hours) < 10 ? '0' : '') + Math.abs(hours) + ':' + (Math.abs(minutes) < 10 ? '0' : '') + Math.abs(minutes);
+}
+
+//use this time when only hours and minutes matter
+function time(hours, minutes) {
+    return new Date(2023, 0, 1, hours, minutes);
+}
+
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+function createGrid(rows, columns, pixel_width, pixel_height) {
+    var grid = document.createElement('table');
+    grid.className = 'grid';
+    grid.id = 'grid';
+    grid.style.width = pixel_width * columns + 'px';
+    grid.style.height = pixel_height * rows + 'px';
+
+    for (let r = 0; r < rows; r++) {
+        var tr = grid.appendChild(document.createElement('tr'));
+        tr.id = 'row' + r;
+        for (let c = 0; c < columns; c++) {
+            let td = document.createElement('td');
+            td.id = r + '_' + c;
+            td.style.width = pixel_width + 'px';
+            td.style.height = pixel_height + 'px';
+            let cell = tr.appendChild(td);
+        }
+    }
+    return grid;
 }
 
 function updateLocalStorage() {

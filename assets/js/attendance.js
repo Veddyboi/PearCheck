@@ -176,10 +176,16 @@ function showStudents(newPeriod) {
             }
         });
         presentStudents.forEach((student, i) => {
+            let lateTimeString = timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived));
+            let lateTime = parseInt(lateTimeString.split(':')[0]) + parseInt(lateTimeString.split(':')[1])
             let nameCell = document.getElementById((i + absentStudents.length) + '_0');
             nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
             let timeCell = document.getElementById((i + absentStudents.length) + '_1');
-            timeCell.style.color = 'green';
+            if (lateTime <= 5 && lateTimeString.substring(0, 1) != '-') {
+                timeCell.style.color = 'yellow';
+            } else {
+                timeCell.style.color = 'green';
+            }
             timeCell.innerHTML = 'present<br>' + timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived));
         });
     }
@@ -257,8 +263,8 @@ var html5QrcodeScanner;
       showStudents(period);
 
     // Update the UI
-    var presentStudents = document.getElementById('present-students');
-    var absentStudents = document.getElementById('absent-students');
+    // var presentStudents = document.getElementById('present-students');
+    // var absentStudents = document.getElementById('absent-students');
 
     // Remove the student from the absent students list if present
     // var absentStudentsList = Array.from(absentStudents.children);
@@ -384,8 +390,25 @@ function processStudentId() {
   var studentIdInput = document.getElementById('student-id');
   var studentId = studentIdInput.value.trim();
 
-  if (studentId !== '') {
-    console.log('Entered student ID:', studentId);
+    var scanned_student = null;
+    teacher.periods[period].students.forEach((student) => {
+        if (student.id == studentId) {
+            scanned_student = student;
+        }
+    });
+  if (scanned_student) {
+      console.log('Entered student ID:', studentId);
+      
+      if (scanned_student.attendance == 'absent') {
+        scanned_student.attendance = 'present';
+        scanned_student.time_arrived = new Date();
+        console.log(scanned_student.id + '(' + scanned_student.first_name + ' ' + scanned_student.last_name + ') has arrived at ' + scanned_student.time_arrived);
+      
+        updateLocalStorage();
+        showStudents(period);
+      } else {
+          console.log('"' + studentId + '" is not a valid studentID');
+    }
     // Process the student ID as needed (e.g., check attendance, update UI)
 
     // Clear the student ID input field

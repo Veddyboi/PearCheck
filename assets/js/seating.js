@@ -25,7 +25,7 @@ function startSeating() {
         sessionStorage.setItem('period', 0);
         period = 0;
     } else {
-        period = sessionStorage.getItem('period');
+        period = JSON.parse(sessionStorage.getItem('period'));
     }
 
     drawSeatingChart();
@@ -33,12 +33,12 @@ function startSeating() {
     //clones the student template to make a list of students
     let template = document.createElement('p');
     template.id = 'student';
-    teacher.periods[period].forEach((student, i) => {
+    teacher.periods[period].students.forEach((student, i) => {
         let copy = template.cloneNode(true);
         let first = student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1);
         let last = student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1);
 
-        copy.innerHTML = last + ", " + first;
+        copy.innerHTML = 'id# ' + student.id + ': ' + last + ", " + first;
         copy.id = 'student' + i;
 
         if (i == 0) {
@@ -63,13 +63,60 @@ function createGrid(rows, columns, pixel_width, pixel_height) {
         for (let c = 0; c < columns; c++) {
             let td = document.createElement('td');
             td.id = r + '_' + c;
+            td.style.width = pixel_width + 'px';
+            td.style.height = pixel_height + 'px';
             let cell = tr.appendChild(td);
-            cell.addEventListener('click', () => {
-                alert('You clicked the student at (' + r + ', ' + c + ')');
-            });
+            cell.addEventListener('click', gridClick, false);
         }
     }
     return grid;
+}
+
+function gridClick(event) {
+    var row = parseInt(event.currentTarget.id.split('_')[0]);
+    var col = parseInt(event.currentTarget.id.split('_')[1]);
+
+    if (teacher.periods[period].students.length > 0) {
+        let unlistedStudents = teacher.periods[period].students;
+        for (let r1 = 0; r1 < seatingChart.length; r1++) {
+            for (let c1 = 0; c1 < seatingChart[0].length; c1++) {
+                if (seatingChart[r1][c1]) {
+                    unlistedStudents.forEach((student, i) => {
+                        if (student.id == seatingChart[r1][c1].id) {
+                            unlistedStudents.splice(i, 1);
+                        }
+                    });
+                }
+            }
+        }
+
+        let student = seatingChart[row][col];
+        if (student) {
+            if (confirm("Are you sure that you want to remove '" + student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1) + ' ' + student.last_name.charAt(0).toUpperCase() + "' from the seating chart?")) {
+                seatingChart[row][col] = null;
+                console.log(1);
+            }
+        } else if (unlistedStudents.length > 0) {
+            let chosenID = prompt('Choose a student by their id# to add to the seating chart:\n' + unlistedStudents.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
+            unlistedStudents.forEach((student1) => {
+                if (student1.id == chosenID) {
+                    setGrid(row, col, student1);
+                    console.log(2);
+                }
+            });
+        } else {
+            let chosenID = prompt('Choose a student by their id# to move to this location on the seating chart:\n' + teacher.periods[period].students.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
+            teacher.periods[period].students.forEach((student1) => {
+                if (student1.id == chosenID) {
+                    setGrid(row, col, student1);
+                    console.log(3);
+                }
+            });
+        }
+        // updateLocalStorage();
+        drawSeatingChart();
+    }
+    return;
 }
 
 function toggleEdit() {
@@ -77,8 +124,6 @@ function toggleEdit() {
     var edit = document.getElementById('editButton');
     var cancel = document.getElementById('cancelEdit');
     var dimensions = document.getElementById('dimensions');
-    var widthInput = document.getElementById('width');
-    var heightInput = document.getElementById('height');
 
     if (editMode) {
         edit.innerHTML = 'confirm';
@@ -89,31 +134,109 @@ function toggleEdit() {
         };
         cancel.id = 'cancelEdit';
         cancel.innerHTML = 'cancel';
-        cancel.style.marginLeft = '20px';
         edit.after(cancel);
 
         cancel.after(dimensions);
 
-        widthInput = document.createElement('INPUT');
+        var widthText = document.createElement('p');
+        widthText.innerHTML = 'width: ';
+        widthText.id = 'width-text';
+        dimensions.appendChild(widthText);
+
+        var widthInput = document.createElement('input');
+        widthInput.addEventListener('input', () => {
+            let val = parseInt(widthInput.value);
+            if (!val || val < parseInt(widthInput.min)) {
+                widthInput.value = widthInput.min;
+                val = parseInt(widthInput.min);
+            }
+            if (val > seatingChart[0].length) {
+                let difference = val - seatingChart[0].length;
+                for (let row of seatingChart) {
+                    for (let i = 0; i < difference; i++) {
+                        row.push(null);
+                    }
+                }
+            } else if (val < seatingChart[0].length) {
+                loop1: for (let c = seatingChart[0].length - 1; c > val - 1; c--) {
+                    let count = 0;
+                    for (let row of seatingChart) {
+                        if (row[c]) {
+                            count++;
+                        }
+                    }
+                    if (count > 0) {
+                        if (!confirm('Are you sure you want to remove ' + count + ' students from the seating chart?')) {
+                            widthInput.value++;
+                            break loop1;
+                        }
+                    }
+                    for (let row of seatingChart) {
+                        row.pop();
+                    }
+                }
+            }
+            updateLocalStorage();
+            drawSeatingChart();
+            return;
+        });
         widthInput.id = 'width';
-        widthInput.style.marginLeft = '50px';
-        widthInput.style.color = 'black';
-        widthInput.style.fontWeight = 'bold';
-        widthInput.style.width = '40px';
+        widthInput.type = 'number';
+        widthInput.min = '5';
+        //default width
+        widthInput.value = seatingChart[0].length;
         dimensions.appendChild(widthInput);
 
-        heightInput = document.createElement('INPUT');
+        var heightText = document.createElement('p');
+        heightText.innerHTML = 'height: ';
+        heightText.id = 'height-text';
+        dimensions.appendChild(heightText);
+
+        var heightInput = document.createElement('input');
+        heightInput.addEventListener('input', () => {
+            let val = parseInt(heightInput.value);
+            if (!val || val < parseInt(heightInput.min)) {
+                heightInput.value = heightInput.min;
+                val = parseInt(heightInput.min);
+            }
+            if (val > seatingChart.length) {
+                let difference = val - seatingChart.length;
+                for (let i = 0; i < difference; i++) {
+                    seatingChart.push(new Array(seatingChart[0].length));
+                }
+            } else if (val < seatingChart.length) {
+                loop1: for (let r = seatingChart.length - 1; r > val - 1; r--) {
+                    let count = 0;
+                    for (let c = 0; c < seatingChart[0].length; c++) {
+                        if (seatingChart[r][c]) {
+                            count++;
+                        }
+                    }
+                    if (count > 0) {
+                        if (!confirm('Are you sure you want to remove ' + count + ' students from the seating chart?')) {
+                            heightInput.value++;
+                            break loop1;
+                        }
+                    }
+                    seatingChart.pop();
+                }
+            }
+            updateLocalStorage();
+            drawSeatingChart();
+            return;
+        });
         heightInput.id = 'height';
-        heightInput.style.color = 'black';
-        heightInput.style.fontWeight = 'bold';
-        heightInput.style.width = '40px';
-        // widthInput.after(heightInput);
-        widthInput.after(heightInput);
+        heightInput.type = 'number';
+        heightInput.min = '3';
+        //default height
+        heightInput.value = seatingChart.length;
+        dimensions.appendChild(heightInput);
     } else {
         edit.innerHTML = 'edit layout';
         cancel.remove();
         dimensions.innerHTML = '';
     }
+    drawSeatingChart();
 }
 
 function showPeriod(newPeriod) {
@@ -122,11 +245,12 @@ function showPeriod(newPeriod) {
 }
 
 function createStudent() {
-    teacher.periods[period].push({
+    teacher.periods[period].students.push({
         first_name: prompt("Student's First Name").toLowerCase(),
-        last_name: prompt("Studnt's Last Name").toLowerCase(),
+        last_name: prompt("Student's Last Name").toLowerCase(),
         id: prompt("Student's id"),
-        attendance: 'absent'
+        attendance: 'absent',
+        time_arrived: null
     });
     updateLocalStorage();
     location.reload();
@@ -137,31 +261,31 @@ function setGrid(row, col, student) {
         for (let c = 0; c < seatingChart[r].length; c++) {
             let oldPosition = seatingChart[r][c];
             if (oldPosition && oldPosition.id == student.id) {
-                oldPosition = null;
+                seatingChart[r][c] = null;
                 document.getElementById(r + '_' + c).innerHTML = '';
             }
         }
     }
     seatingChart[row][col] = student;
 
-    drawSeatingChart();
     updateLocalStorage();
+    drawSeatingChart();
     return;
 }
 
 function drawSeatingChart() {
-    seatingChart = teacher.seatingCharts[period];
+    seatingChart = teacher.periods[period].seatingChart;
 
-    //creates grid with each cell having a width/height of 50px
+    //creates grid with square cells
     let oldGrid = document.getElementById('grid');
-    let grid = createGrid(seatingChart.length, seatingChart[0].length, 50, 50);
+    let grid = createGrid(seatingChart.length, seatingChart[0].length, 100, 100);
     oldGrid.parentNode.replaceChild(grid, oldGrid);
 
     for (let r = 0; r < seatingChart.length; r++) {
         for (let c = 0; c < seatingChart[r].length; c++) {
             let student = seatingChart[r][c];
             if (student) {
-                document.getElementById(r + '_' + c).innerHTML = student.first_name + student.last_name;
+                document.getElementById(r + '_' + c).innerHTML = student.first_name + '<br>' + student.last_name;
             }
         }
     }
@@ -177,9 +301,8 @@ function drawSeatingChart() {
     });
 
     var text = document.createElement('p');
-    text.id = 'unlisted students';
-    text.style.color = 'red';
-    teacher.periods[period].forEach((student1, i) => {
+    text.id = 'unlisted-students';
+    teacher.periods[period].students.forEach((student1, i) => {
         if (!listedStudentIDs.includes(student1.id)) {
             if (i > 0) {
                 text.innerHTML += ', ';
@@ -187,12 +310,12 @@ function drawSeatingChart() {
             text.innerHTML += student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase();
         }
     });
-    let oldMessage = document.getElementById('ulisted students');
+    let oldMessage = document.getElementById('unlisted-students');
     if (oldMessage) {
         oldMessage.remove();
     }
     if (text.innerHTML) {
-        text.innerHTML = 'Not In Seating Chart: ' + text.innerHTML;
+        text.innerHTML = (editMode? '<br><br><br>' : '') + 'Not In Seating Chart: ' + text.innerHTML;
         document.getElementById('after edit button').after(text);
     }
 }

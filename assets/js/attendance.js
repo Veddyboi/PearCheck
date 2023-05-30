@@ -26,14 +26,26 @@ function showStudents(period) {
     // Determine the schedule based on the day of the week
     const today = new Date();   
     const dayOfWeek = today.getDay();
-    var scheduleText = "";
-    var scheduleTimes = "";
+    scheduleText = "";
+    scheduleTimes = "";
     var times;
     
     switch (dayOfWeek) {
         case 1:
+            times = [
+                "A˚ 7:15 AM - 8:23 AM (68 min)",
+                "1˚ 8:30 AM - 9:27 AM (57 min)",
+                "2˚ 9:34 AM - 10:31 AM (57 min)",
+                "Brunch 10:31 AM - 10:36 AM (5 min)",
+                "3˚ 10:43 AM - 11:40 AM (57 min)",
+                "4˚ 11:47 AM - 12:44 PM (57 min)",
+                "Lunch 12:44 PM - 1:14 PM (30 min)",
+                "5˚ 1:21 PM - 2:18 PM (57 min)",
+                "6˚ 2:25 PM - 3:22 PM (57 min)",
+                "B˚ 3:29 PM - 4:26 PM (57 min)"
+            ];
+            break;
         case 2:
-        case 5:
             times = [
                 "A˚ 7:15 AM - 8:23 AM (68 min)",
                 "1˚ 8:30 AM - 9:27 AM (57 min)",
@@ -71,15 +83,23 @@ function showStudents(period) {
                 "B˚ 3:27 PM - 4:24 PM (57 min)"
             ];
             break;
-        case 6:
-        case 7:
-        case 0:
+        case 5:
             times = [
-                "No Schedule available."
+                "A˚ 7:15 AM - 8:23 AM (68 min)",
+                "1˚ 8:30 AM - 9:27 AM (57 min)",
+                "2˚ 9:34 AM - 10:31 AM (57 min)",
+                "Brunch 10:31 AM - 10:36 AM (5 min)",
+                "3˚ 10:43 AM - 11:40 AM (57 min)",
+                "4˚ 11:47 AM - 12:44 PM (57 min)",
+                "Lunch 12:44 PM - 1:14 PM (30 min)",
+                "5˚ 1:21 PM - 2:18 PM (57 min)",
+                "6˚ 2:25 PM - 3:22 PM (57 min)",
+                "B˚ 3:29 PM - 4:26 PM (57 min)"
             ];
             break;
         default:
             scheduleText = "No schedule available for today.";
+            break;
     }
     
     // Update the schedule text and times
@@ -93,7 +113,7 @@ function showStudents(period) {
     var absentStudents = [];
     var presentStudents = [];
 
-    teacher.periods[period].forEach((student) => {
+    teacher.periods[period].students.forEach((student) => {
         let fullName = student.first_name + ' ' + student.last_name;
         if (student.attendance == 'absent') {
             absentStudents.push(fullName);

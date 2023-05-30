@@ -27,8 +27,8 @@
     <nav id="menu">
       <ul class="links">
         <li><a href="index.html">Home</a></li>
+        <li><a href="attendance.html">Check-In</a></li>
         <li><a href="seating.html">Seating Chart</a></li>
-        <li><a href='more.html'>About Us</a></li>
       </ul>
       <ul class="actions stacked">
         <li><a href='login.html' class='button fit' id='login'>Log In</a></li>
@@ -59,8 +59,10 @@
           <ul id="schedule-list" style="list-style-type: none;"></ul>
         </div>
         <div id="wrapper" style="display: flex; align-items: center;">
-          <p id="present-students" style="margin-right: 100px; margin-bottom: 0;">Present Students:</p>
-          <p id="absent-students" style="margin-right: 100px; margin-bottom: 0;">Absent Students:</p>
+          <!-- <p id="present-students" style="margin-right: 100px; margin-bottom: 0;">Present Students:</p>
+          <p id="absent-students" style="margin-right: 100px; margin-bottom: 0;">Absent Students:</p> -->
+          <table id='grid'></table>
+          <p id="students" style="margin-right: 100px; margin-bottom: 0;">Present Students:</p>
         </div>
       </div>
     </center>
@@ -71,6 +73,11 @@
         <ul class='actions'>
           <li style="margin-left: 100px"><a href='' class='button next' id="start-scanning">Start Scanning</a></li>
         </ul>
+        <div id="student-id-input" style="display: none; margin-top: 20px;">
+          <label for="student-id">Enter student ID:</label>
+          <input type="text" id="student-id" placeholder="Student ID">
+          <button id="enter-id-button">Enter</button>
+        </div>
       </div>
     </section>
 
@@ -78,160 +85,6 @@
       <div id="qr-reader" style="width: 600px"></div>
     </center>
     <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
-    <script>
-      var html5QrcodeScanner;
-      var scannerInitialized = false;
-
-      function onScanSuccess(decodedText, decodedResult) {
-        console.log(`Code scanned = ${decodedText}`, decodedResult);
-
-        // Store the scanned data in the database/localStorage
-        // Example code to save the scanned data in localStorage
-        var scannedData = {
-          text: decodedText,
-          result: decodedResult,
-          timestamp: new Date().getTime(),
-        };
-
-        // Save the scanned data to localStorage
-        var scannedDataList = localStorage.getItem('scannedDataList');
-        if (scannedDataList) {
-          scannedDataList = JSON.parse(scannedDataList);
-          scannedDataList.push(scannedData);
-        } else {
-          scannedDataList = [scannedData];
-        }
-        localStorage.setItem('scannedDataList', JSON.stringify(scannedDataList));
-
-        // Check if the scanned ID matches any student ID for the logged-in teacher
-        var teacherIndex = localStorage.getItem('teacher');
-        var teachers = JSON.parse(localStorage.getItem('teachers'));
-        var teacher = teachers[JSON.parse(teacherIndex)];
-        var students = teacher.periods.flatMap(period => period.students);
-
-        var scannedStudent = students.find(student => student.id === decodedText);
-        if (scannedStudent) {
-          var fullName = scannedStudent.first_name + ' ' + scannedStudent.last_name;
-          var presentStudents = document.getElementById('present-students');
-          var absentStudents = document.getElementById('absent-students');
-
-          // Remove the student from the absent students list if present
-          var absentStudentsList = Array.from(absentStudents.children);
-          var absentStudentItem = absentStudentsList.find(item => item.innerText === fullName);
-          if (absentStudentItem) {
-            absentStudents.removeChild(absentStudentItem);
-          }
-
-          // Add the student to the present students list if not already present
-          var presentStudentsList = Array.from(presentStudents.children);
-          var presentStudentItem = presentStudentsList.find(item => item.innerText === fullName);
-          if (!presentStudentItem) {
-            var listItem = document.createElement('li');
-            listItem.innerText = fullName;
-            presentStudents.appendChild(listItem);
-          }
-        }
-      }
-
-      function initializeScanner() {
-        // Initialize the physical wired scanner
-        // Implement the code to connect to the scanner here
-        // ...
-
-        // Assuming the physical scanner triggers a scan event
-        scanner.on('scan', function (barcodeData) {
-          onScanSuccess(barcodeData.text, barcodeData.result);
-        });
-
-        scannerInitialized = true;
-      }
-
-      function checkTimeAndStartScanning() {
-        var today = new Date();
-        var dayOfWeek = today.getDay();
-        var currentHour = today.getHours();
-        var currentMinute = today.getMinutes();
-
-        var schedule = {
-          1: [
-            { startHour: 8, startMinute: 35, endHour: 8, endMinute: 39 },
-            { startHour: 8, startMinute: 40, endHour: 24, endMinute: 55 },
-          ],
-          2: [
-            { startHour: 8, startMinute: 35, endHour: 8, endMinute: 39 },
-            { startHour: 8, startMinute: 40, endHour: 9, endMinute: 49 },
-          ],
-          3: [
-            { startHour: 8, startMinute: 35, endHour: 8, endMinute: 39 },
-            { startHour: 8, startMinute: 40, endHour: 9, endMinute: 49 },
-          ],
-          4: [
-            { startHour: 8, startMinute: 35, endHour: 8, endMinute: 39 },
-            { startHour: 8, startMinute: 40, endHour: 9, endMinute: 49 },
-          ],
-          5: [
-            { startHour: 8, startMinute: 35, endHour: 8, endMinute: 39 },
-            { startHour: 8, startMinute: 40, endHour: 9, endMinute: 49 },
-          ]
-        };
-
-        if (dayOfWeek in schedule) {
-          var timeSlots = schedule[dayOfWeek];
-          var scanningAllowed = false;
-
-          for (var i = 0; i < timeSlots.length; i++) {
-            var { startHour, startMinute, endHour, endMinute } = timeSlots[i];
-            var startTime = new Date();
-            startTime.setHours(startHour);
-            startTime.setMinutes(startMinute);
-            var endTime = new Date();
-            endTime.setHours(endHour);
-            endTime.setMinutes(endMinute);
-
-            if (today >= startTime && today <= endTime) {
-              scanningAllowed = true;
-              break;
-            }
-          }
-
-          // ...
-
-          if (scanningAllowed) {
-            html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 400 });
-            html5QrcodeScanner.render(onScanSuccess);
-
-            // Calculate the remaining time until the next time slot ends
-            var nextTimeSlot = timeSlots[i + 1];
-            if (nextTimeSlot) {
-              var nextEndTime = new Date();
-              nextEndTime.setHours(nextTimeSlot.endHour);
-              nextEndTime.setMinutes(nextTimeSlot.endMinute);
-              var remainingTime = nextEndTime - today;
-
-              // Reload the page after the remaining time to refresh the screen
-              setTimeout(function () {
-                location.href = location.href;
-              }, remainingTime);
-            } else {
-              // If there is no next time slot, you can handle it accordingly
-              console.log("No more time slots available.");
-            }
-          }
-
-          // ...
-
-        } else {
-          alert("No scanning schedule available for today.");
-        }
-      }
-
-      window.addEventListener('DOMContentLoaded', function () {
-        document.querySelector('.button.next').addEventListener('click', function (event) {
-          event.preventDefault();
-          checkTimeAndStartScanning();
-        });
-      });
-    </script>
   </div>
 
   <!-- Scripts -->

@@ -144,7 +144,7 @@ function showStudents(newPeriod) {
     
     var classTimes = [
         [[time(8,30), time(9,27)], [time(9,34), time(10,31)], [time(10,43),time(11,40)], [time(11,47),time(12,44)], [time(13,21),time(14,18)], [time(14,25),time(15,22)]],
-        [[time(8,30), time(9,27)], [time(9,34), time(10,31)], [time(10,43),time(11,40)], [time(11,47),time(12,44)], [time(13,21),time(14,18)], [time(14,25),time(15,22)]],
+        [[time(8,30), time(9,27)], [time(9,34), time(10,31)], [time(10,43),time(11,40)], [time(11,47),time(12,44)], [time(13,51),time(14,18)], [time(14,25),time(15,22)]],
         [[time(8,50), time(10,22)], [time(8,50),time(10,22)], [time(10,37),time(12,9)], [time(10,37),time(12,9)], [time(13,48),time(15,20)], [time(13,48),time(15,20)]],
         [[time(8,50), time(10,22)], [time(8,50),time(10,22)], [time(10,37),time(12,9)], [time(10,37),time(12,9)], [time(13,48),time(15,20)], [time(13,48),time(15,20)]],
         [[time(8,30), time(9,27)], [time(9,34), time(10,31)], [time(10,43),time(11,40)], [time(11,47),time(12,44)], [time(13,21),time(14,18)], [time(14,25),time(15,22)]]
@@ -155,7 +155,7 @@ function showStudents(newPeriod) {
         // studentsText.innerHTML += absentStudents.map(student => capitalize(student.first_name) + ' ' + capitalize(student.last_name) + ' ' + timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime) + '<br>');
         // studentsText.innerHTML += presentStudents.map(student => capitalize(student.first_name) + ' ' + capitalize(student.last_name) + ' ' + timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived)) + '<br>');
         let oldGrid = document.getElementById('grid');
-        let grid = createGrid(absentStudents.length + presentStudents.length, 2, 100, 100);
+        let grid = createGrid(absentStudents.length + presentStudents.length, 2, 100, 100); 
         oldGrid.parentNode.replaceChild(grid, oldGrid);
 
         absentStudents.forEach((student, i) => {
@@ -181,12 +181,14 @@ function showStudents(newPeriod) {
             let nameCell = document.getElementById((i + absentStudents.length) + '_0');
             nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
             let timeCell = document.getElementById((i + absentStudents.length) + '_1');
-            if (lateTime <= 5 && lateTimeString.substring(0, 1) != '-') {
+            if (lateTime >= 1 && lateTimeString.substring(0, 1) != '-') {
                 timeCell.style.color = 'yellow';
+                timeCell.innerHTML = 'late<br>';
             } else {
                 timeCell.style.color = 'green';
+                timeCell.innerHTML = 'present<br>';
             }
-            timeCell.innerHTML = 'present<br>' + timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived));
+            timeCell.innerHTML += timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived));
         });
     }
 }

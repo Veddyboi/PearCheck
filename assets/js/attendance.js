@@ -24,19 +24,22 @@ function showStudents(newPeriod) {
     var currentTime = new Date();
     if (updatedTime) {
         var oldTime = new Date(JSON.parse(updatedTime));
-        if (oldTime < currentTime && (oldTime.getDate() != currentTime.getDate() || oldTime.getMonth() != currentTime.getMonth() || oldTime.getFullYear != currentTime.getFullYear())) {
+        if (oldTime.getDate() != currentTime.getDate() || oldTime.getMonth() != currentTime.getMonth() || oldTime.getFullYear() != currentTime.getFullYear()) {
             //sets every student to absent
-            JSON.parse(localStorage.getItem('teachers')).forEach((teacher) => {
-                teacher.periods.forEach((period1) => {
+            console.log('bruh');
+            let teachers = JSON.parse(localStorage.getItem('teachers'));
+            teachers.forEach((teacher1) => {
+                teacher1.periods.forEach((period1) => {
                     period1.students.forEach((student) => {
                         student.attendance = 'absent';
                         student.time_arrived = null;
                     });
                 });
             });
+            localStorage.setItem('teachers', JSON.stringify(teachers));
+            teacher = teachers[JSON.parse(localStorage.getItem('teacher'))];
         }
     }
-    updateLocalStorage();
     localStorage.setItem('last-updated', JSON.stringify(currentTime));
     period = newPeriod;
 

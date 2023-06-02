@@ -363,11 +363,13 @@ function drawSeatingChart() {
         for (let c = 0; c < seatingChart[r].length; c++) {
             let cell = seatingChart[r][c];
             if (cell) {
+                let cellElement = document.getElementById(r + '_' + c);
                 if (cell.student) {
-                    document.getElementById(r + '_' + c).innerHTML = cell.student.first_name + '<br>' + cell.student.last_name;
+                    cellElement.innerHTML = cell.student.first_name + '<br>' + cell.student.last_name;
+                    cellElement.style.color = 'white';
                 }
                 if (cell.type = 'desk') {
-                    document.getElementById(r + '_' + c).style.backgroundColor = '#7393B3';
+                    cellElement.style.backgroundColor = '#7393B3';
                 }
             }
         }

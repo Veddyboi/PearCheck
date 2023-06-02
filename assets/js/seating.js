@@ -75,45 +75,50 @@ function createGrid(rows, columns, pixel_width, pixel_height) {
 function gridClick(event) {
     var row = parseInt(event.currentTarget.id.split('_')[0]);
     var col = parseInt(event.currentTarget.id.split('_')[1]);
+    console.log('EPIC');
+    console.log(teacher.periods[period]);
 
     if (teacher.periods[period].students.length > 0) {
-        let unlistedStudents = teacher.periods[period].students;
+        let unlistedStudents = JSON.parse(JSON.stringify(teacher.periods[period].students));
         for (let r1 = 0; r1 < seatingChart.length; r1++) {
             for (let c1 = 0; c1 < seatingChart[0].length; c1++) {
                 if (seatingChart[r1][c1]) {
-                    unlistedStudents.forEach((student, i) => {
-                        if (student.id == seatingChart[r1][c1].id) {
-                            unlistedStudents.splice(i, 1);
+                    for (let index = unlistedStudents.length - 1; index >= 0; index--) {
+                        if (unlistedStudents[index].id == seatingChart[r1][c1].id) {
+                            unlistedStudents.splice(index, 1);
                         }
-                    });
+                    }
                 }
             }
         }
 
+        console.log('ok');
+        console.log(teacher.periods[period]);
         let student = seatingChart[row][col];
         if (student) {
             if (confirm("Are you sure that you want to remove '" + student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1) + ' ' + student.last_name.charAt(0).toUpperCase() + "' from the seating chart?")) {
-                seatingChart[row][col] = null;
                 console.log(1);
+                seatingChart[row][col] = null;
             }
         } else if (unlistedStudents.length > 0) {
             let chosenID = prompt('Choose a student by their id# to add to the seating chart:\n' + unlistedStudents.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
             unlistedStudents.forEach((student1) => {
                 if (student1.id == chosenID) {
-                    setGrid(row, col, student1);
                     console.log(2);
+                    console.log(teacher.periods[period]);
+                    setGrid(row, col, student1);
                 }
             });
         } else {
             let chosenID = prompt('Choose a student by their id# to move to this location on the seating chart:\n' + teacher.periods[period].students.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
             teacher.periods[period].students.forEach((student1) => {
                 if (student1.id == chosenID) {
-                    setGrid(row, col, student1);
                     console.log(3);
+                    setGrid(row, col, student1);
                 }
             });
         }
-        // updateLocalStorage();
+        updateLocalStorage();
         drawSeatingChart();
     }
     return;
@@ -257,6 +262,8 @@ function createStudent() {
 }
 
 function setGrid(row, col, student) {
+    console.log('before');
+    console.log(teacher.periods[period]);
     for (let r = 0; r < seatingChart.length; r++) {
         for (let c = 0; c < seatingChart[r].length; c++) {
             let oldPosition = seatingChart[r][c];
@@ -267,6 +274,8 @@ function setGrid(row, col, student) {
         }
     }
     seatingChart[row][col] = student;
+    console.log('after');
+    console.log(teacher.periods[period]);
 
     updateLocalStorage();
     drawSeatingChart();
@@ -302,11 +311,13 @@ function drawSeatingChart() {
 
     var text = document.createElement('p');
     text.id = 'unlisted-students';
+    let firstMatch = true;
     teacher.periods[period].students.forEach((student1, i) => {
         if (!listedStudentIDs.includes(student1.id)) {
-            if (i > 0) {
+            if (!firstMatch) {
                 text.innerHTML += ', ';
             }
+            firstMatch = false;
             text.innerHTML += student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase();
         }
     });

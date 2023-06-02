@@ -197,8 +197,8 @@ function createTeacher() {
             for (let i = 0; i < periods.length; i++) {
                 //creates seating chart with 3 rows and 5 columns
                 let seatingChartArr = new Array(3);
-                for (let k = 0; k < seatingChartArr.length; k++) {
-                    seatingChartArr[k] = new Array(5);
+                for (let j = 0; j < seatingChartArr.length; j++) {
+                    seatingChartArr[j] = new Array(5);
                 }
                 periods[i] = {
                     students: [],

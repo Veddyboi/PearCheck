@@ -73,18 +73,18 @@ function createGrid(rows, columns, pixel_width, pixel_height) {
 }
 
 function gridClick(event) {
-    var row = parseInt(event.currentTarget.id.split('_')[0]);
+    if (editMode) {
+        var row = parseInt(event.currentTarget.id.split('_')[0]);
     var col = parseInt(event.currentTarget.id.split('_')[1]);
-    console.log('EPIC');
-    console.log(teacher.periods[period]);
 
     if (teacher.periods[period].students.length > 0) {
+        let cell = seatingChart[row][col];
         let unlistedStudents = JSON.parse(JSON.stringify(teacher.periods[period].students));
         for (let r1 = 0; r1 < seatingChart.length; r1++) {
             for (let c1 = 0; c1 < seatingChart[0].length; c1++) {
                 if (seatingChart[r1][c1]) {
                     for (let index = unlistedStudents.length - 1; index >= 0; index--) {
-                        if (unlistedStudents[index].id == seatingChart[r1][c1].id) {
+                        if (seatingChart[r1][c1].student && unlistedStudents[index].id == seatingChart[r1][c1].student.id) {
                             unlistedStudents.splice(index, 1);
                         }
                     }
@@ -92,34 +92,42 @@ function gridClick(event) {
             }
         }
 
-        console.log('ok');
-        console.log(teacher.periods[period]);
-        let student = seatingChart[row][col];
-        if (student) {
-            if (confirm("Are you sure that you want to remove '" + student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1) + ' ' + student.last_name.charAt(0).toUpperCase() + "' from the seating chart?")) {
-                console.log(1);
+        if (cell) {
+            if (cell.student) {
+                if (confirm("Are you sure you want to remove '" + cell.student.first_name.charAt(0).toUpperCase() + cell.student.first_name.slice(1) + ' ' + cell.student.last_name.charAt(0).toUpperCase() + "' from the seating chart?")) {
+                    seatingChart[row][col].student = null;
+                }
+            } else if (document.getElementById('student-check').checked) {
+                if (unlistedStudents.length > 0) {
+                    let chosenID = prompt('Choose a student by their id# to add to the seating chart:\n' + unlistedStudents.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
+                    unlistedStudents.forEach((student1) => {
+                        if (student1.id == chosenID) {
+                            setGrid(row, col, student1);
+                        }
+                    });
+                } else {
+                    let chosenID = prompt('Choose a student by their id# to move to this location on the seating chart:\n' + teacher.periods[period].students.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
+                    teacher.periods[period].students.forEach((student1) => {
+                        if (student1.id == chosenID) {
+                            setGrid(row, col, student1);
+                        }
+                    });
+                }
+            } else if (confirm("Are you sure you want to remove this " + cell.type + "?")) {
                 seatingChart[row][col] = null;
             }
-        } else if (unlistedStudents.length > 0) {
-            let chosenID = prompt('Choose a student by their id# to add to the seating chart:\n' + unlistedStudents.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
-            unlistedStudents.forEach((student1) => {
-                if (student1.id == chosenID) {
-                    console.log(2);
-                    console.log(teacher.periods[period]);
-                    setGrid(row, col, student1);
-                }
-            });
         } else {
-            let chosenID = prompt('Choose a student by their id# to move to this location on the seating chart:\n' + teacher.periods[period].students.map(student1 => student1.id + ': ' + student1.first_name.charAt(0).toUpperCase() + student1.first_name.slice(1) + ' ' + student1.last_name.charAt(0).toUpperCase() + student1.last_name.slice(1) + '\n'));
-            teacher.periods[period].students.forEach((student1) => {
-                if (student1.id == chosenID) {
-                    console.log(3);
-                    setGrid(row, col, student1);
+            if (document.getElementById('desk-check').checked) {
+                seatingChart[row][col] = {
+                    type: 'desk',
+                    student: null
                 }
-            });
+            }
         }
+
         updateLocalStorage();
         drawSeatingChart();
+    }
     }
     return;
 }
@@ -128,7 +136,10 @@ function toggleEdit() {
     editMode = !editMode;
     var edit = document.getElementById('editButton');
     var cancel = document.getElementById('cancelEdit');
+    var randomizer = document.getElementById('randomizer');
     var dimensions = document.getElementById('dimensions');
+    var field = document.createElement('div');
+    field.id = 'field';
 
     if (editMode) {
         edit.innerHTML = 'confirm';
@@ -141,7 +152,28 @@ function toggleEdit() {
         cancel.innerHTML = 'cancel';
         edit.after(cancel);
 
+        randomizer = document.createElement('button');
+        randomizer.onclick = () => {
+            randomize(teacher.periods[period]);
+            updateLocalStorage();
+            drawSeatingChart();
+        };
+        randomizer.id = 'randomizer';
+        randomizer.innerHTML = 'randomize';
+        cancel.after(randomizer);
+
         cancel.after(dimensions);
+        field.innerHTML = '<fieldset><legend>What would you like to edit?</legend>' +
+        '<div>' +
+        '  <input type="radio" id="student-check" name="drone" value="student-check" checked>' +
+        '  <label for="student-check">Students</label>' +
+        '</div>' +
+        '<div>' +
+        '  <input type="radio" id="desk-check" name="drone" value="desk-check">' +
+        '  <label for="desk-check">Desks</label>' +
+        '</div>' +
+        '</fieldset>';
+        dimensions.after(field);
 
         var widthText = document.createElement('p');
         widthText.innerHTML = 'width: ';
@@ -154,6 +186,10 @@ function toggleEdit() {
             if (!val || val < parseInt(widthInput.min)) {
                 widthInput.value = widthInput.min;
                 val = parseInt(widthInput.min);
+            }
+            if (val > parseInt(heightInput.max)) {
+                widthInput.value = widthInput.max;
+                val = parseInt(heightInput.max);
             }
             if (val > seatingChart[0].length) {
                 let difference = val - seatingChart[0].length;
@@ -181,13 +217,15 @@ function toggleEdit() {
                     }
                 }
             }
+
             updateLocalStorage();
             drawSeatingChart();
             return;
         });
         widthInput.id = 'width';
         widthInput.type = 'number';
-        widthInput.min = '5';
+        widthInput.min = '3';
+        widthInput.max = '500';
         //default width
         widthInput.value = seatingChart[0].length;
         dimensions.appendChild(widthInput);
@@ -203,6 +241,10 @@ function toggleEdit() {
             if (!val || val < parseInt(heightInput.min)) {
                 heightInput.value = heightInput.min;
                 val = parseInt(heightInput.min);
+            }
+            if (val > parseInt(heightInput.max)) {
+                heightInput.value = heightInput.max;
+                val = parseInt(heightInput.max);
             }
             if (val > seatingChart.length) {
                 let difference = val - seatingChart.length;
@@ -233,13 +275,16 @@ function toggleEdit() {
         heightInput.id = 'height';
         heightInput.type = 'number';
         heightInput.min = '3';
+        heightInput.max = '500';
         //default height
         heightInput.value = seatingChart.length;
         dimensions.appendChild(heightInput);
     } else {
         edit.innerHTML = 'edit layout';
         cancel.remove();
+        randomizer.remove();
         dimensions.innerHTML = '';
+        document.getElementById('field').remove();
     }
     drawSeatingChart();
 }
@@ -262,24 +307,47 @@ function createStudent() {
 }
 
 function setGrid(row, col, student) {
-    console.log('before');
-    console.log(teacher.periods[period]);
     for (let r = 0; r < seatingChart.length; r++) {
         for (let c = 0; c < seatingChart[r].length; c++) {
             let oldPosition = seatingChart[r][c];
-            if (oldPosition && oldPosition.id == student.id) {
-                seatingChart[r][c] = null;
+            if (oldPosition && oldPosition.student && oldPosition.student.id == student.id) {
+                seatingChart[r][c] = {
+                    type: 'desk',
+                    student: null
+                };
                 document.getElementById(r + '_' + c).innerHTML = '';
             }
         }
     }
-    seatingChart[row][col] = student;
-    console.log('after');
-    console.log(teacher.periods[period]);
+    seatingChart[row][col].student = student;
 
     updateLocalStorage();
     drawSeatingChart();
     return;
+}
+
+function randomize(classPeriod) {
+    var desks = [];
+    for (let r = 0; r < classPeriod.seatingChart.length; r++) {
+        for (let c = 0; c < classPeriod.seatingChart[r].length; c++) {
+            let desk = classPeriod.seatingChart[r][c];
+            if (desk && desk.type == 'desk') {
+                desks.push(desk);
+            }
+        }
+    }
+    classPeriod.students.forEach((student) => {
+        if (desks.length == 0) {
+            alert('There are not enough desks for each student');
+            return;
+        }
+        let rand = Math.floor(Math.random() * desks.length);
+        desks[rand].student = student;
+        desks.splice(rand, 1);
+    });
+    if (desks.length > 0) {
+        alert('There are not enough students to fill each desk!');
+    }
 }
 
 function drawSeatingChart() {
@@ -292,9 +360,14 @@ function drawSeatingChart() {
 
     for (let r = 0; r < seatingChart.length; r++) {
         for (let c = 0; c < seatingChart[r].length; c++) {
-            let student = seatingChart[r][c];
-            if (student) {
-                document.getElementById(r + '_' + c).innerHTML = student.first_name + '<br>' + student.last_name;
+            let cell = seatingChart[r][c];
+            if (cell) {
+                if (cell.student) {
+                    document.getElementById(r + '_' + c).innerHTML = cell.student.first_name + '<br>' + cell.student.last_name;
+                }
+                if (cell.type = 'desk') {
+                    document.getElementById(r + '_' + c).style.backgroundColor = '#7393B3';
+                }
             }
         }
     }
@@ -302,9 +375,9 @@ function drawSeatingChart() {
     //shows which students are not in the seating chart
     var listedStudentIDs = [];
     seatingChart.forEach((row1) => {
-        row1.forEach((student1) => {
-            if (student1) {
-                listedStudentIDs.push(student1.id);
+        row1.forEach((cell) => {
+            if (cell && cell.student) {
+                listedStudentIDs.push(cell.student.id);
             }
         });
     });
@@ -312,7 +385,7 @@ function drawSeatingChart() {
     var text = document.createElement('p');
     text.id = 'unlisted-students';
     let firstMatch = true;
-    teacher.periods[period].students.forEach((student1, i) => {
+    teacher.periods[period].students.forEach((student1) => {
         if (!listedStudentIDs.includes(student1.id)) {
             if (!firstMatch) {
                 text.innerHTML += ', ';

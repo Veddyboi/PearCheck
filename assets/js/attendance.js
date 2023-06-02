@@ -1,5 +1,10 @@
 var teacher = {};
 var period = 0;
+var interval = setInterval(() => {
+    if (teacher) {
+        showStudents(period);
+    }
+}, 7000);;
 
 //runs on load of attendance.html
 function startAttendance() {
@@ -165,21 +170,23 @@ function showStudents(newPeriod) {
             let nameCell = document.getElementById(i + '_0');
             nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
             let timeCell = document.getElementById(i + '_1');
-            let lateTime = timeStringToMinutes(timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime));
+            let lateTimeString = timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime)
+            let lateTime = timeStringToMinutes(lateTimeString);
             let periodLength = timeStringToMinutes(timeDifference(classTimes[dayOfWeek - 1][period][0], classTimes[dayOfWeek - 1][period][1]));
-            if (lateTime >= periodLength) {
+            if (lateTime >= periodLength || lateTime <= 0) {
                 timeCell.innerHTML = 'absent';
             } else {
-                timeCell.innerHTML = 'absent<br>' + timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime);
+                timeCell.innerHTML = 'absent<br>' + lateTimeString;
             }
-            if (lateTime <= 5) {
+            if (lateTime <= 5 && lateTime > 0) {
                 timeCell.style.color = 'orange';
             } else {
                 timeCell.style.color = 'red';
             }
         });
         presentStudents.forEach((student, i) => {
-            let lateTime = timeStringToMinutes(timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived)));
+            let lateTimeString = timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived));
+            let lateTime = timeStringToMinutes(lateTimeString);
             let nameCell = document.getElementById((i + absentStudents.length) + '_0');
             nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
             let timeCell = document.getElementById((i + absentStudents.length) + '_1');
@@ -208,7 +215,8 @@ function timeDifference(date1, date2) {
 
 //time in hours:minutes -> 08:30
 function timeStringToMinutes(time) {
-    return parseInt(time.split(':')[0]) + parseInt(time.split(':')[1]);
+    let splitTime = time.split(':').map(time1 => parseInt(time1));
+    return splitTime[0] * 60 + splitTime[1] * (splitTime[0] < 0 ? -1 : 1);
 }
 
 //use this time when only hours and minutes matter

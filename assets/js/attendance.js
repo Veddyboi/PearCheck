@@ -165,10 +165,8 @@ function showStudents(newPeriod) {
             let nameCell = document.getElementById(i + '_0');
             nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
             let timeCell = document.getElementById(i + '_1');
-            timeCell.style.color = 'red';
-            let lateTimeString = timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime);
-            let lateTime = parseInt(lateTimeString.split(':')[0]) + parseInt(lateTimeString.split(':')[1])
-            let periodLength = timeDifference(classTimes[dayOfWeek - 1][period][0], classTimes[dayOfWeek - 1][period][1]);
+            let lateTime = timeStringToMinutes(timeDifference(classTimes[dayOfWeek - 1][period][0], currentTime));
+            let periodLength = timeStringToMinutes(timeDifference(classTimes[dayOfWeek - 1][period][0], classTimes[dayOfWeek - 1][period][1]));
             if (lateTime >= periodLength) {
                 timeCell.innerHTML = 'absent';
             } else {
@@ -176,11 +174,12 @@ function showStudents(newPeriod) {
             }
             if (lateTime <= 5) {
                 timeCell.style.color = 'orange';
+            } else {
+                timeCell.style.color = 'red';
             }
         });
         presentStudents.forEach((student, i) => {
-            let lateTimeString = timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived));
-            let lateTime = parseInt(lateTimeString.split(':')[0]) + parseInt(lateTimeString.split(':')[1])
+            let lateTime = timeStringToMinutes(timeDifference(classTimes[dayOfWeek - 1][period][0], new Date(student.time_arrived)));
             let nameCell = document.getElementById((i + absentStudents.length) + '_0');
             nameCell.innerHTML = capitalize(student.first_name) + ' ' + capitalize(student.last_name);
             let timeCell = document.getElementById((i + absentStudents.length) + '_1');
@@ -205,6 +204,11 @@ function timeDifference(date1, date2) {
     minutes = (hours * 60 + minutes) % 60;
 
     return (hours * 60 + minutes < 0 ? '-' : '') + (Math.abs(hours) < 10 ? '0' : '') + Math.abs(hours) + ':' + (Math.abs(minutes) < 10 ? '0' : '') + Math.abs(minutes);
+}
+
+//time in hours:minutes -> 08:30
+function timeStringToMinutes(time) {
+    return parseInt(time.split(':')[0]) + parseInt(time.split(':')[1]);
 }
 
 //use this time when only hours and minutes matter

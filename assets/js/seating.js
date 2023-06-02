@@ -332,6 +332,7 @@ function randomize(classPeriod) {
         for (let c = 0; c < classPeriod.seatingChart[r].length; c++) {
             let desk = classPeriod.seatingChart[r][c];
             if (desk && desk.type == 'desk') {
+                desk.student = null;
                 desks.push(desk);
             }
         }
